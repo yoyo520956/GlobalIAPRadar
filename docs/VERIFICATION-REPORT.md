@@ -93,13 +93,13 @@
 
 ## 5. 构建与测试验证（GitHub Actions，macOS 真机工具链）
 
-- 工作流 `.github/workflows/ios-build.yml`，run **43725807854**（commit 1836f2e）**全绿**：
+- 工作流 `.github/workflows/ios-build.yml`，run **43736153825**（commit 8ae8b7e）**全绿**：
   - `data-engine`：Ubuntu 上对 Apple 真实 API 做 175 区全量扫描，成功并上传快照
   - `ios`：Xcode 16.4 + iPhone SE (3rd generation) iOS 18.5 模拟器（脚本按 SDK 版本自动配对，见 `scripts/select_simulator.py`）
     - Release `iphoneos` 构建 **BUILD SUCCEEDED**
-    - 单元测试 **Executed 10 tests, 0 failures — TEST SUCCEEDED**（含新增的状态合成诚实性测试 `StatusCompositionTests`）
-    - 产出未签名 IPA artifact `GlobalIAPRadar-unsigned-ipa`（约 0.5 MB，含可执行文件 1.9 MB + 175 区数据库）
-- 本地 IPA 已归档：`GlobalIAPRadar-unsigned.ipa`，SHA-256 `b14e08fdc3be0b18822bf3cf005a740fe19fdcb49d0d2c7b6c512ca6a2b169ca`
+    - 单元测试 **Executed 16 tests, 0 failures — TEST SUCCEEDED**（含状态合成诚实性测试 `StatusCompositionTests` 6 例）
+    - 产出未签名 IPA artifact `GlobalIAPRadar-unsigned-ipa`（约 0.5 MB，含可执行文件 + 175 区数据库）
+- 本地 IPA 已归档：`GlobalIAPRadar-unsigned.ipa`，SHA-256 `064d5f0e21781d669b9258ab8a95f64e90dfbeaf94a3b073e841165a6ce2edc5`
 - 签名 IPA 走 `signed-ipa.yml`（workflow_dispatch，证书/描述文件放在仓库 secrets，个人免费 Apple ID 可用，7 天重签）
 
 ## 6. 复现方式
