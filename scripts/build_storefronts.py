@@ -58,7 +58,7 @@ for r in rows:
 
 # Apple storefronts missing from the ISO dataset — Apple uses its own codes
 MANUAL = [{"storefront": "xk", "alpha3": "XKS", "nameEn": "Kosovo", "nameZh": "科索沃",
-           "currency": None, "isoCurrency": "EUR", "pppCategory": "unknown",
+           "currency": "EUR", "isoCurrency": "EUR", "pppCategory": "unknown",
            "note": "Apple storefront code, not ISO 3166"}]
 out = sorted(out + [m for m in MANUAL if m["storefront"] not in {x["storefront"] for x in out}],
              key=lambda x: x["storefront"])

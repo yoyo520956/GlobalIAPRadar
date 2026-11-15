@@ -2,8 +2,24 @@ import XCTest
 @testable import GlobalIAPRadar
 
 final class StorefrontDatabaseTests: XCTestCase {
+
+    /// The storefront table lives in the app bundle; fall back to the test bundle and the
+    /// source checkout so the suite also runs without a host application.
+    static func locateStorefrontsJSON() -> URL? {
+        if let bundled = Bundle.main.url(forResource: "storefronts", withExtension: "json") {
+            return bundled
+        }
+        if let testBundle = Bundle(for: StorefrontDatabaseTests.self).url(forResource: "storefronts", withExtension: "json") {
+            return testBundle
+        }
+        let source = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("GlobalIAPRadar/Resources/storefronts.json")
+        return FileManager.default.fileExists(atPath: source.path) ? source : nil
+    }
     func testStorefrontDatabaseHasAll175Storefronts() throws {
-        let url = try XCTUnwrap(Bundle.main.url(forResource: "storefronts", withExtension: "json"))
+        let url = try XCTUnwrap(Self.locateStorefrontsJSON(), "storefronts.json not found")
         let data = try Data(contentsOf: url)
         let storefronts = try JSONDecoder().decode([Storefront].self, from: data)
         XCTAssertEqual(storefronts.count, 175, "Apple exposes 175 storefronts; the database must be complete")

@@ -15,6 +15,11 @@ struct Storefront: Identifiable, Codable, Hashable, Sendable {
 
     var id: String { storefront }
     var displayName: String { nameZh.isEmpty ? nameEn : nameZh }
+
+    /// Currency used by Apple in this storefront. The static value is a hint
+    /// (ISO currency); the app overwrites it with the empirical currency that
+    /// the iTunes lookup API returns for the storefront at query time.
+    var currencyHint: String? { currency ?? isoCurrency }
 }
 
 // MARK: - App

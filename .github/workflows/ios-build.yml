@@ -1,4 +1,4 @@
-name: iOS Build, Test & Data Smoke
+name: iOS Build & Test
 
 on:
   push:
@@ -20,20 +20,18 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Probe ChatGPT across all storefronts
+      - name: Probe ChatGPT across all 175 storefronts
         run: python3 scripts/probe_apps.py "ChatGPT=6448311069"
-      - name: Probe WeChat across all storefronts
-        run: python3 scripts/probe_apps.py "WeChat=414478124"
-      - name: Upload probe snapshots
+      - name: Upload probe snapshot
         uses: actions/upload-artifact@v4
         with:
-          name: probe-snapshots
+          name: probe-snapshot
           path: data/probe_*.json
 
   ios:
     name: Build unsigned IPA + unit tests
     runs-on: macos-15
-    timeout-minutes: 45
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
 
@@ -47,39 +45,67 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
-      - name: Run unit tests (iPhone SE 3rd generation simulator)
+      - name: Show toolchain
         run: |
-          set -o pipefail
-          xcodebuild -project GlobalIAPRadar.xcodeproj -scheme GlobalIAPRadar \
-            -destination 'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=latest' \
-            CODE_SIGNING_ALLOWED=NO test | tee test.log
+          xcodebuild -version
+          swift --version
+          xcodegen --version
 
       - name: Build release (unsigned)
         run: |
-          set -o pipefail
+          set -eo pipefail
+          mkdir -p build
           xcodebuild -project GlobalIAPRadar.xcodeproj -scheme GlobalIAPRadar \
             -sdk iphoneos -configuration Release -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build | tee build.log
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build | tee build/build.log
+
+      - name: Resolve simulator
+        id: sim
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin).get('devices', {})
+          fallback = None
+          for runtime, devices in data.items():
+              for dev in devices:
+                  if not dev.get('isAvailable'):
+                      continue
+                  name = dev.get('name', '')
+                  if fallback is None and name.startswith('iPhone'):
+                      fallback = dev['udid']
+                  if name == 'iPhone SE (3rd generation)':
+                      fallback = dev['udid']
+                      break
+              if fallback and fallback == dev.get('udid') and dev.get('name') == 'iPhone SE (3rd generation)':
+                  break
+          print(fallback or '')
+          ")
+          if [ -z "$UDID" ]; then
+            echo "No available iPhone simulator found" >&2
+            exit 1
+          fi
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          echo "Using simulator: $UDID"
+          xcrun simctl list devices available | head -40
+
+      - name: Run unit tests
+        run: |
+          set -eo pipefail
+          xcodebuild -project GlobalIAPRadar.xcodeproj -scheme GlobalIAPRadar \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            CODE_SIGNING_ALLOWED=NO test | tee build/test.log
 
       - name: Package unsigned IPA
         run: |
+          set -eo pipefail
+          rm -rf Payload
           mkdir -p Payload
           cp -R build/Build/Products/Release-iphoneos/GlobalIAPRadar.app Payload/
           zip -qr GlobalIAPRadar-unsigned.ipa Payload
           shasum -a 256 GlobalIAPRadar-unsigned.ipa
-          du -h GlobalIAPRadar-unsigned.ipa
+          ls -lh GlobalIAPRadar-unsigned.ipa
 
-      - name: Upload build logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-logs
-          path: |
-            build.log
-            test.log
-
-      - name: Upload unsigned IPA
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: GlobalIAPRadar-unsigned-ipa
           path: GlobalIAPRadar-unsigned.ipa

@@ -1534,7 +1534,7 @@
   "alpha3": "XKS",
   "nameEn": "Kosovo",
   "nameZh": "科索沃",
-  "currency": null,
+  "currency": "EUR",
   "isoCurrency": "EUR",
   "pppCategory": "unknown",
   "note": "Apple storefront code, not ISO 3166"
