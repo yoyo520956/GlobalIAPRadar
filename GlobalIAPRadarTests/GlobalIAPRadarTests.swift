@@ -121,6 +121,74 @@ final class SKUAlignerTests: XCTestCase {
     }
 }
 
+/// Decodes a REAL captured catalog response. This test exists because the
+/// shipping app reported "数据源未返回 IAP" for all 175 storefronts: the live
+/// key is `top-in-app-purchasables` (kebab-case) but the model expected
+/// `topInAppPurchasables`, so decoding silently yielded zero products.
+final class CatalogDecodingTests: XCTestCase {
+
+    /// The fixture is a real captured response. Resolve it from the test bundle
+    /// first, then from the source tree (works under CI where the resource may
+    /// not be copied), and fail loudly rather than crash if it is missing.
+    private var fixture: Data {
+        let candidates: [URL] = [
+            Bundle(for: CatalogDecodingTests.self).url(forResource: "catalog_us_chatgpt", withExtension: "json") ?? nil,
+            Bundle(for: CatalogDecodingTests.self).url(forResource: "catalog_us_chatgpt", withExtension: "json", subdirectory: "Fixtures") ?? nil,
+            URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()
+                .appendingPathComponent("Fixtures/catalog_us_chatgpt.json"),
+        ].compactMap { $0 }
+        for url in candidates where FileManager.default.fileExists(atPath: url.path) {
+            if let data = try? Data(contentsOf: url) { return data }
+        }
+        return Data()
+    }
+
+    func testKebabCaseKeyDecodesProducts() throws {
+        let payload = try JSONDecoder().decode(CatalogResponse.self, from: fixture)
+        let items = payload.data.first?.views?.topInAppPurchasables?.data ?? []
+        XCTAssertFalse(items.isEmpty, "the kebab-case key must decode -- otherwise every storefront silently shows 0 IAPs")
+    }
+
+    func testProductsCarryRealPrices() throws {
+        let payload = try JSONDecoder().decode(CatalogResponse.self, from: fixture)
+        let items = payload.data.first?.views?.topInAppPurchasables?.data ?? []
+        XCTAssertEqual(items.count, 9, "ChatGPT US storefront has 9 IAPs")
+
+        let products = IAPCatalogClient.products(from: payload)
+        let plus = try XCTUnwrap(products.first { $0.productID == "6448311597" })
+        XCTAssertEqual(plus.name, "ChatGPT Plus")
+        XCTAssertEqual(plus.price ?? 0, 19.99, accuracy: 0.001)
+        XCTAssertEqual(plus.currency, "USD")
+        XCTAssertEqual(plus.formattedPrice, "$19.99")
+        XCTAssertEqual(plus.period, "P1M")
+        XCTAssertEqual(plus.familyName, "ChatGPT Plan")
+        XCTAssertEqual(plus.familyRank, 4)
+        XCTAssertEqual(plus.kind, .subscription, "a recurring period plus isSubscription must read as a subscription")
+
+        let credits = try XCTUnwrap(products.first { $0.productID == "6757568473" })
+        XCTAssertEqual(credits.price ?? 0, 4.0, accuracy: 0.001)
+        XCTAssertEqual(credits.kind, .unknown,
+                       "public catalog cannot distinguish consumable from non-consumable -- must not be claimed")
+        XCTAssertNotNil(credits.rawType, "item-level type ('in-apps') is preserved for traceability")
+    }
+
+    func testMissingIapViewIsReportedAsFailureNotAbsence() throws {
+        // Simulate the exact shipped bug: a 200 payload whose IAP view did not
+        // decode. It must NOT be reported as "the app has no IAPs".
+        var payload = try JSONDecoder().decode(CatalogResponse.self, from: fixture)
+        payload.data[0].views = nil
+        XCTAssertFalse(IAPCatalogClient.iapViewPresent(in: payload))
+        XCTAssertTrue(IAPCatalogClient.products(from: payload).isEmpty)
+    }
+
+    func testIapViewIsDetectedInFixture() throws {
+        let payload = try JSONDecoder().decode(CatalogResponse.self, from: fixture)
+        XCTAssertTrue(IAPCatalogClient.iapViewPresent(in: payload),
+                      "a real response carries the IAP view -- if this fails the key name drifted again")
+    }
+}
+
 final class CurrencyConversionTests: XCTestCase {
     func testCrossCurrencyConversion() {
         let rate = CurrencyRate(base: "USD",
