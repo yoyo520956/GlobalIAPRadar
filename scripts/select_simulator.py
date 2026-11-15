@@ -123,19 +123,16 @@ def device_sdk_works(xcode_path):
     return result is not None and result.returncode == 0
 
 
-def newest_first(xcodes):
-    """Newest Xcode first, comparing version chunks numerically."""
-    def key(item):
-        parts = []
-        for chunk in re.split(r"[.\-]", item[0]):
-            parts.append((0, int(chunk)) if chunk.isdigit() else (1, 0))
-        return parts
-    return sorted(xcodes, key=key, reverse=True)
-
-
 def select_device(xcodes):
-    """Newest Xcode that can actually build for iphoneos. No runtime needed."""
-    for version, xcode_path in newest_first(xcodes):
+    """Working iphoneos Xcode, LOWEST version first.
+
+    Rationale is the same as the simulator path: stay on the toolchain the
+    unsigned build and the 20 unit tests were actually verified with. A newer
+    Xcode is only used if every older one fails the iphoneos probe, so the
+    signed IPA cannot silently change compilers on a whim.
+    `xcodes` arrives sorted ascending, so plain iteration is lowest-first.
+    """
+    for version, xcode_path in xcodes:
         sdk = device_sdk_version(xcode_path)
         if sdk is None:
             log(f"Xcode {version}: iphoneos SDK unknown, skipping")
