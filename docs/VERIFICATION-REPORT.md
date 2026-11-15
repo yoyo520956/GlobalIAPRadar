@@ -99,7 +99,7 @@
     - Release `iphoneos` 构建 **BUILD SUCCEEDED**
     - 单元测试 **Executed 16 tests, 0 failures — TEST SUCCEEDED**（含状态合成诚实性测试 `StatusCompositionTests` 6 例）
     - 产出未签名 IPA artifact `GlobalIAPRadar-unsigned-ipa`（约 0.5 MB，含可执行文件 + 175 区数据库）
-- 本地 IPA 已归档：`GlobalIAPRadar-unsigned.ipa`，SHA-256 `064d5f0e21781d669b9258ab8a95f64e90dfbeaf94a3b073e841165a6ce2edc5`
+- 本地 IPA 已归档：`GlobalIAPRadar-unsigned.ipa`，SHA-256 `5d85be1042341d19d435844e9f824e9fba12347f95cc9c2ad6e97c8281432ff3`（484,135 字节，内含 1.94 MB Mach-O 可执行文件、Info.plist、175 区 storefronts.json）
 - 签名 IPA 走 `signed-ipa.yml`（workflow_dispatch，证书/描述文件放在仓库 secrets，个人免费 Apple ID 可用，7 天重签）
 
 ## 6. 复现方式
