@@ -9,10 +9,12 @@ empirical currency returned by the iTunes lookup API per storefront.
 """
 import csv
 import json
+import os
 import urllib.request
 
-CSV = "/var/minis/workspace/GlobalIAPRadar/data/countries.csv"
-OUT = "/var/minis/workspace/GlobalIAPRadar/data/storefronts.json"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CSV = os.path.join(ROOT, "data", "countries.csv")
+OUT = os.path.join(ROOT, "data", "storefronts.json")
 DATASET = "https://cdn.jsdelivr.net/gh/mledoze/countries@master/countries.json"
 
 req = urllib.request.Request(DATASET, headers={"User-Agent": "Mozilla/5.0"})

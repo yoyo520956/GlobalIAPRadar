@@ -267,7 +267,7 @@ actor CurrencyService {
         request.setValue(ITunesClient.userAgent, forHTTPHeaderField: "User-Agent")
         let data = try await http.data(for: request)
         let payload = try JSONDecoder().decode(FrankfurterResponse.self, from: data)
-        let normalised = payload.rates.reduce(into: [String: Double]()) { result, entry in
+        var normalised = payload.rates.reduce(into: [String: Double]()) { result, entry in
             result[entry.key.uppercased()] = entry.value
         }
         normalised[payload.base.uppercased()] = 1.0

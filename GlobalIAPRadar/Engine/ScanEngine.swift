@@ -27,6 +27,7 @@ final class ScanEngine {
     private var task: Task<Void, Never>?
     private var progressIndex: [String: Int] = [:]
     let scanner = GlobalScanner()
+    private var activeScanner: GlobalScanner?
 
     // MARK: Derived statistics
 

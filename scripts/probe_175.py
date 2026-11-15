@@ -9,15 +9,17 @@ Outputs a JSON snapshot per app + a console summary. This is the reference
 implementation of the iOS app's data engine (same logic, runs without a Mac).
 """
 import json
+import os
 import time
 import urllib.request
 import urllib.error
 import concurrent.futures as cf
 from collections import Counter
 
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15"
-DB = "/var/minis/workspace/GlobalIAPRadar/data/storefronts.json"
-OUTDIR = "/var/minis/workspace/GlobalIAPRadar/data/"
+DB = os.path.join(ROOT, "data", "storefronts.json")
+OUTDIR = os.path.join(ROOT, "data") + os.sep
 SFS = json.load(open(DB, encoding="utf-8"))
 APPS = {"ChatGPT": 6448311069, "Spotify": 324684580, "Notion": 868278324, "WeChat": 414478124}
 
