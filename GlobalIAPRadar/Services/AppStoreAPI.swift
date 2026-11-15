@@ -139,40 +139,66 @@ actor ITunesClient {
 
 // MARK: - apps.apple.com catalog (in-app purchases)
 
-private struct CatalogResponse: Decodable {
-    let data: [CatalogApp]
+/// Internal (not `private`) so the unit tests can decode a captured response
+/// and lock the key names against the live API.
+struct CatalogResponse: Decodable {
+    var data: [CatalogApp]
 }
 
-private struct CatalogApp: Decodable {
+struct CatalogApp: Decodable {
     let id: String?
     let attributes: CatalogAppAttributes?
-    let views: CatalogViews?
+    var views: CatalogViews?
 }
 
-private struct CatalogAppAttributes: Decodable {
+struct CatalogAppAttributes: Decodable {
     let name: String?
     let artistName: String?
 }
 
-private struct CatalogViews: Decodable {
+/// Apple writes this key as kebab-case (`top-in-app-purchasables`), not camelCase.
+/// Accept all three spellings so a rename on Apple's side degrades instead of
+/// silently producing an empty list -- the empty list was exactly the bug that
+/// made every storefront report "数据源未返回 IAP".
+struct CatalogViews: Decodable {
     let topInAppPurchasables: CatalogView?
+
+    private enum CodingKeys: String, CodingKey {
+        case topInAppPurchasables = "top-in-app-purchasables"
+        case camel = "topInAppPurchasables"
+        case snake = "top_in_app_purchasables"
+    }
+
+    init(topInAppPurchasables: CatalogView?) {
+        self.topInAppPurchasables = topInAppPurchasables
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let view = try container.decodeIfPresent(CatalogView.self, forKey: .topInAppPurchasables)
+            ?? container.decodeIfPresent(CatalogView.self, forKey: .camel)
+            ?? container.decodeIfPresent(CatalogView.self, forKey: .snake)
+        self.init(topInAppPurchasables: view)
+    }
 }
 
-private struct CatalogView: Decodable {
+struct CatalogView: Decodable {
     let data: [CatalogItem]
 }
 
-private struct CatalogItem: Decodable {
+struct CatalogItem: Decodable {
     let id: String?
+    /// Item-level type, e.g. "in-apps". Apple's public catalog does NOT expose
+    /// consumable vs non-consumable here, so this must not be used to claim one.
+    let type: String?
     let attributes: CatalogItemAttributes?
 }
 
-private struct CatalogItemAttributes: Decodable {
+struct CatalogItemAttributes: Decodable {
     let name: String?
     let offerName: String?
     let subscriptionFamilyName: String?
     let subscriptionFamilyRank: FlexibleInt?
-    let type: String?
     let isSubscription: Bool?
     let offers: [CatalogOffer]?
 }
@@ -199,6 +225,40 @@ struct IAPCatalogClient: Sendable {
         let appName: String?
         let seller: String?
         let products: [IAPProduct]
+        /// False when the payload carried no IAP view at all. That is a
+        /// structural/decoding failure, NOT "the app has no IAPs" -- reporting
+        /// it as absence is how the 175/175 "未返回 IAP" bug reached the user.
+        let iapViewPresent: Bool
+    }
+
+    /// Pure mapping from the raw payload to products, so the unit tests can
+    /// exercise it against a captured response without touching the network.
+    static func products(from payload: CatalogResponse) -> [IAPProduct] {
+        guard let app = payload.data.first else { return [] }
+        let items = app.views?.topInAppPurchasables?.data ?? []
+        return items.compactMap { item in
+            guard let productID = item.id, let attributes = item.attributes else { return nil }
+            let offer = attributes.offers?.first
+            return IAPProduct(productID: productID,
+                              name: attributes.name ?? productID,
+                              offerName: attributes.offerName,
+                              familyName: attributes.subscriptionFamilyName,
+                              familyRank: attributes.subscriptionFamilyRank?.value,
+                              // Item-level type ("in-apps"); Apple does not expose
+                              // consumable vs non-consumable through this endpoint.
+                              rawType: item.type,
+                              isSubscription: attributes.isSubscription ?? false,
+                              period: offer?.recurringSubscriptionPeriod,
+                              price: offer?.price?.value,
+                              currency: offer?.currencyCode,
+                              formattedPrice: offer?.priceFormatted)
+        }
+    }
+
+    /// True when the response actually carried the IAP view. Used to tell
+    /// "Apple says this app has no IAPs" apart from "we could not read the IAPs".
+    static func iapViewPresent(in payload: CatalogResponse) -> Bool {
+        payload.data.first?.views?.topInAppPurchasables != nil
     }
 
     func fetchProducts(appID: String, storefront: String) async throws -> CatalogSnapshot {
@@ -217,26 +277,10 @@ struct IAPCatalogClient: Sendable {
         try await limiter.wait()
         let data = try await http.data(for: request)
         let payload = try JSONDecoder().decode(CatalogResponse.self, from: data)
-        guard let app = payload.data.first else { throw HTTPError.emptyResponse }
-        let items = app.views?.topInAppPurchasables?.data ?? []
-        let products: [IAPProduct] = items.compactMap { item in
-            guard let productID = item.id, let attributes = item.attributes else { return nil }
-            let offer = attributes.offers?.first
-            return IAPProduct(productID: productID,
-                              name: attributes.name ?? productID,
-                              offerName: attributes.offerName,
-                              familyName: attributes.subscriptionFamilyName,
-                              familyRank: attributes.subscriptionFamilyRank?.value,
-                              rawType: attributes.type,
-                              isSubscription: attributes.isSubscription ?? false,
-                              period: offer?.recurringSubscriptionPeriod,
-                              price: offer?.price?.value,
-                              currency: offer?.currencyCode,
-                              formattedPrice: offer?.priceFormatted)
-        }
-        return CatalogSnapshot(appName: app.attributes?.name,
-                               seller: app.attributes?.artistName,
-                               products: products)
+        return CatalogSnapshot(appName: payload.data.first?.attributes?.name,
+                               seller: payload.data.first?.attributes?.artistName,
+                               products: Self.products(from: payload),
+                               iapViewPresent: Self.iapViewPresent(in: payload))
     }
 }
 
