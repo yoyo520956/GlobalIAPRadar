@@ -112,7 +112,10 @@ final class ScanEngine {
 
         phase = .scanning
         errorMessage = nil
-        let scanner = self.scanner
+        // A fresh scanner guarantees the gate is not left paused by a previous
+        // run (pause -> cancel -> retry would otherwise deadlock here).
+        let scanner = GlobalScanner(maxConcurrent: 6)
+        activeScanner = scanner
         task = Task { [weak self] in
             let fresh = await scanner.scan(app: app, storefronts: subset) { update in
                 self?.apply(update)
@@ -133,7 +136,7 @@ final class ScanEngine {
 
     func resume() async {
         guard phase == .paused else { return }
-        await scanner.gate.resume()
+        await activeScanner?.gate.resume()
         phase = .scanning
     }
 
