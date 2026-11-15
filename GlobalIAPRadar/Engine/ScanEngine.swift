@@ -105,7 +105,7 @@ final class ScanEngine {
 
     func retryFailed() {
         guard let app else { return }
-        let retryable: Set<StorefrontQueryStatus> = [.networkError, .rateLimited, .notVerified]
+        let retryable: Set<StorefrontQueryStatus> = [.networkError, .rateLimited, .catalogUnavailable, .notVerified]
         let failedCodes = Set(progress.filter { retryable.contains($0.status) }.map(\.storefront))
         let subset = scannedStorefronts.filter { failedCodes.contains($0.storefront) }
         guard !subset.isEmpty else { return }

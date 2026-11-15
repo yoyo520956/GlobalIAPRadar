@@ -113,6 +113,7 @@ enum L10n {
         "status.productNotFound": ("商品未发现", "Product not found"),
         "status.notListed": ("该地区未上架", "Not listed here"),
         "status.noIAPData": ("数据源未返回 IAP", "Source returned no IAP"),
+        "status.catalogUnavailable": ("内购目录查询失败", "IAP catalog query failed"),
         "status.networkError": ("网络错误", "Network error"),
         "status.rateLimited": ("请求被限流", "Rate limited"),
         "status.identityUnverified": ("商品身份无法确认", "Identity unverified"),

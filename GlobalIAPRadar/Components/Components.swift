@@ -19,7 +19,7 @@ struct StatusPill: View {
         case .success: return .green
         case .notListed, .productNotFound, .noIAPData: return .orange
         case .rateLimited: return .yellow
-        case .networkError, .identityUnverified, .notVerified: return .red
+        case .networkError, .catalogUnavailable, .identityUnverified, .notVerified: return .red
         }
     }
 }

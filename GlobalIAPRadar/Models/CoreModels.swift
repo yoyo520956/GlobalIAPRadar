@@ -106,6 +106,10 @@ enum StorefrontQueryStatus: String, Codable, Sendable {
     case productNotFound
     case notListed
     case noIAPData
+    /// The catalog endpoint failed (4xx other than 404/429, 5xx, server error).
+    /// Explicitly a query failure, never an assertion that the App or its IAPs
+    /// are absent. Distinct from `notListed` and from `noIAPData`.
+    case catalogUnavailable
     case networkError
     case rateLimited
     case identityUnverified
@@ -118,6 +122,7 @@ enum StorefrontQueryStatus: String, Codable, Sendable {
         case .productNotFound: return "status.productNotFound"
         case .notListed: return "status.notListed"
         case .noIAPData: return "status.noIAPData"
+        case .catalogUnavailable: return "status.catalogUnavailable"
         case .networkError: return "status.networkError"
         case .rateLimited: return "status.rateLimited"
         case .identityUnverified: return "status.identityUnverified"

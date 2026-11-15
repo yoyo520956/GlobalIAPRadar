@@ -137,3 +137,49 @@ final class CurrencyConversionTests: XCTestCase {
         XCTAssertNil(rate.convert(10, from: "XYZ", to: "USD"))
     }
 }
+
+/// Locks the hard data-honesty rule: a query FAILURE must never be reported as
+/// "not listed". `.notListed` may only come from Apple's own lookup saying so.
+final class StatusCompositionTests: XCTestCase {
+    private let sample = IAPProduct(productID: "sku-1", name: "Plus", offerName: nil,
+                                    familyName: "Plan", familyRank: 4,
+                                    rawType: "AUTO_RENEWABLE_SUBSCRIPTION", isSubscription: true,
+                                    period: "P1M", price: 19.99, currency: "USD",
+                                    formattedPrice: "$19.99")
+
+    func testSuccessBeatsEverything() {
+        XCTAssertEqual(GlobalScanner.resolveStatus(lookup: .listed, catalog: .products([sample])), .success)
+        XCTAssertEqual(GlobalScanner.resolveStatus(lookup: .failed, catalog: .products([sample])), .success)
+    }
+
+    func testCatalog404WhileListedIsQueryFailureNotNotListed() {
+        // The bug this guards against: iTunes says the App is sold here, the
+        // catalog endpoint 404s -> that is a failed query, NOT "not listed".
+        XCTAssertEqual(GlobalScanner.resolveStatus(lookup: .listed, catalog: .notFound), .catalogUnavailable)
+        XCTAssertEqual(GlobalScanner.resolveStatus(lookup: .listed, catalog: .failed), .catalogUnavailable)
+    }
+
+    func testNotListedOnlyWhenAppleSaysSo() {
+        XCTAssertEqual(GlobalScanner.resolveStatus(lookup: .notListed, catalog: .empty), .notListed)
+        XCTAssertEqual(GlobalScanner.resolveStatus(lookup: .notListed, catalog: .notFound), .notListed)
+        // But lookup failure alone must never claim absence:
+        XCTAssertNotEqual(GlobalScanner.resolveStatus(lookup: .failed, catalog: .empty), .notListed)
+        XCTAssertNotEqual(GlobalScanner.resolveStatus(lookup: .failed, catalog: .notFound), .notListed)
+    }
+
+    func testEmptyCatalogWithListedAppIsNoIAPData() {
+        XCTAssertEqual(GlobalScanner.resolveStatus(lookup: .listed, catalog: .empty), .noIAPData)
+    }
+
+    func testRateLimitedPropagates() {
+        XCTAssertEqual(GlobalScanner.resolveStatus(lookup: .rateLimited, catalog: .rateLimited), .rateLimited)
+        XCTAssertEqual(GlobalScanner.resolveStatus(lookup: .listed, catalog: .rateLimited), .rateLimited)
+    }
+
+    func testProductWithEmptyIDIsUnverified() {
+        let broken = IAPProduct(productID: "", name: "?", offerName: nil, familyName: nil,
+                                familyRank: nil, rawType: nil, isSubscription: false,
+                                period: nil, price: nil, currency: nil, formattedPrice: nil)
+        XCTAssertEqual(GlobalScanner.resolveStatus(lookup: .listed, catalog: .products([broken])), .identityUnverified)
+    }
+}

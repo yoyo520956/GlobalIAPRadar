@@ -24,7 +24,7 @@ SFS = json.load(open(DB, encoding="utf-8"))
 APPS = {"ChatGPT": 6448311069, "Spotify": 324684580, "Notion": 868278324, "WeChat": 414478124}
 
 
-def get(url, headers=None, timeout=15, retries=2):
+def get(url, headers=None, timeout=20, retries=4):
     h = {"User-Agent": UA, "Accept": "application/json"}
     if headers:
         h.update(headers)
@@ -35,14 +35,22 @@ def get(url, headers=None, timeout=15, retries=2):
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.status, json.loads(r.read().decode("utf-8", "replace"))
         except urllib.error.HTTPError as e:
+            code = e.code
+            # Rate limiting / server errors are query failures: back off and retry,
+            # but remember the last failure so it can be reported honestly if all fail.
+            if code in (429, 500, 502, 503, 504) and attempt < retries:
+                last = f"HTTP {code}"
+                time.sleep(min(2 ** attempt, 8) + 0.5 * attempt)
+                continue
             try:
                 body = e.read().decode("utf-8", "replace")[:160]
             except Exception:
                 body = ""
-            return e.code, {"error": body}
+            return code, {"error": body}
         except Exception as e:
             last = e
-            time.sleep(1.5 * (attempt + 1))
+            if attempt < retries:
+                time.sleep(1.5 * (attempt + 1))
     return 0, {"error": str(last)}
 
 
@@ -89,19 +97,36 @@ def probe(sf, appid):
 
 
 def status_of(r):
+    """Classify by what actually happened, never conflating failures with absence.
+
+    ok_with_iap        catalog 200 with a non-empty IAP view
+    no_iap_200         catalog 200 but IAP view empty (source genuinely has none)
+    catalog_404        catalog 404 (query failed for this source)
+    rate_limited       still 429 after retries (query failed)
+    catalog_error      any other non-200 catalog status / transport error
+    lookup_empty       iTunes lookup 200 with resultCount == 0 (Apple: not sold here)
+    lookup_error       iTunes lookup itself failed
+    """
     if r.get("iaps"):
         return "ok_with_iap"
-    if r.get("app"):
-        return "app_available_no_iap"
+    iap_http = r.get("iap_http")
+    if iap_http == 200:
+        return "no_iap_200" if r.get("app") else "lookup_empty"
+    if iap_http == 404:
+        return "catalog_404"
+    if iap_http == 429:
+        return "rate_limited"
+    if iap_http:
+        return "catalog_error"
     if r.get("lookup_http") == 200:
         return "lookup_empty"
-    return "unavailable"
+    return "lookup_error"
 
 
 def main():
     for appname, appid in APPS.items():
         t0 = time.time()
-        with cf.ThreadPoolExecutor(max_workers=5) as ex:
+        with cf.ThreadPoolExecutor(max_workers=3) as ex:
             results = list(ex.map(lambda sf: probe(sf, appid), SFS))
         cnt = Counter(status_of(r) for r in results)
         withiap = [r for r in results if r.get("iaps")]

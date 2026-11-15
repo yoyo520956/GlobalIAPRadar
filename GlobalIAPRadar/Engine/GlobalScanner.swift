@@ -26,6 +26,29 @@ actor ScanGate {
     }
 }
 
+/// Outcome of the iTunes lookup call for one storefront.
+enum LookupOutcome: Equatable, Sendable {
+    /// Lookup returned 200 with at least one result: the App is listed there.
+    case listed
+    /// Lookup returned 200 with resultCount == 0: Apple itself says not sold there.
+    case notListed
+    case rateLimited
+    /// Transport / decoding / other HTTP failure. Never evidence of absence.
+    case failed
+}
+
+/// Outcome of the apps.apple.com catalog call for one storefront.
+enum CatalogOutcome: Equatable, Sendable {
+    case products([IAPProduct])
+    /// Catalog returned 200 but the IAP view is empty.
+    case empty
+    /// Catalog returned 404 (no catalog entry for this app in this storefront).
+    case notFound
+    case rateLimited
+    /// Other HTTP error (4xx/5xx) or transport failure.
+    case failed
+}
+
 /// Runs the 175-storefront sweep. Pure infrastructure: no UI, fully testable.
 struct GlobalScanner: Sendable {
     let iTunes: ITunesClient
@@ -64,7 +87,41 @@ struct GlobalScanner: Sendable {
         }
     }
 
-    /// Queries a single storefront: availability + app price via iTunes, IAP via the catalog.
+    /// Composes the final status from two independent sources.
+    ///
+    /// Hard rule: a query *failure* is never reported as "not listed".
+    /// `.notListed` may only be produced when Apple's own lookup API answered
+    /// 200 with an empty result set (or when catalog 404 agrees with it).
+    static func resolveStatus(lookup: LookupOutcome, catalog: CatalogOutcome) -> StorefrontQueryStatus {
+        switch catalog {
+        case .products(let products):
+            if products.contains(where: { $0.productID.isEmpty }) {
+                return .identityUnverified
+            }
+            return .success
+        case .empty:
+            switch lookup {
+            case .notListed: return .notListed
+            default: return .noIAPData
+            }
+        case .notFound:
+            switch lookup {
+            case .notListed: return .notListed        // both sources agree: absent
+            default: return .catalogUnavailable        // listed, but catalog query failed
+            }
+        case .rateLimited:
+            return .rateLimited
+        case .failed:
+            switch lookup {
+            case .notListed: return .notListed
+            case .rateLimited: return .rateLimited
+            default: return .catalogUnavailable
+            }
+        }
+    }
+
+    /// Queries a single storefront. Both sources are always queried; the app's
+    /// own price comes from iTunes, the IAP list from the public catalog page API.
     func fetch(app: AppInfo, storefront: Storefront) async -> StorefrontResult {
         let code = storefront.storefront
         await gate.waitIfPaused()
@@ -73,26 +130,27 @@ struct GlobalScanner: Sendable {
                                     appCurrency: nil, appFormattedPrice: nil, products: [], capturedAt: Date())
         }
 
+        // --- Source 1: iTunes lookup (availability + app price) ---
         var appPrice: Double?
         var appCurrency: String?
         var appFormatted: String?
+        var lookupOutcome: LookupOutcome
 
         do {
             let infos = try await iTunes.lookup(appID: app.appID, storefront: code)
-            guard let info = infos.first else {
-                return StorefrontResult(storefront: code, status: .notListed, appPrice: nil,
-                                        appCurrency: nil, appFormattedPrice: nil, products: [], capturedAt: Date())
+            if let info = infos.first {
+                appPrice = info.price
+                appCurrency = info.currency
+                appFormatted = info.formattedPrice
+                lookupOutcome = .listed
+            } else {
+                // Apple's own API answered 200 with zero results: not sold here.
+                lookupOutcome = .notListed
             }
-            appPrice = info.price
-            appCurrency = info.currency
-            appFormatted = info.formattedPrice
         } catch let error as HTTPError {
-            return StorefrontResult(storefront: code, status: Self.status(for: error),
-                                    appPrice: nil, appCurrency: nil, appFormattedPrice: nil,
-                                    products: [], capturedAt: Date())
+            lookupOutcome = Self.lookupOutcome(for: error)
         } catch {
-            return StorefrontResult(storefront: code, status: .networkError, appPrice: nil,
-                                    appCurrency: nil, appFormattedPrice: nil, products: [], capturedAt: Date())
+            lookupOutcome = .failed
         }
 
         await gate.waitIfPaused()
@@ -102,24 +160,20 @@ struct GlobalScanner: Sendable {
                                     products: [], capturedAt: Date())
         }
 
+        // --- Source 2: public catalog page API (IAP products) ---
         var products: [IAPProduct] = []
-        var status: StorefrontQueryStatus
+        var catalogOutcome: CatalogOutcome
         do {
             let snapshot = try await catalog.fetchProducts(appID: app.appID, storefront: code)
             products = snapshot.products
-            if products.isEmpty {
-                status = .noIAPData
-            } else if products.contains(where: { $0.productID.isEmpty }) {
-                status = .identityUnverified
-            } else {
-                status = .success
-            }
+            catalogOutcome = products.isEmpty ? .empty : .products(products)
         } catch let error as HTTPError {
-            status = Self.status(for: error)
+            catalogOutcome = Self.catalogOutcome(for: error)
         } catch {
-            status = .networkError
+            catalogOutcome = .failed
         }
 
+        let status = Self.resolveStatus(lookup: lookupOutcome, catalog: catalogOutcome)
         return StorefrontResult(storefront: code,
                                 status: status,
                                 appPrice: appPrice,
@@ -129,11 +183,18 @@ struct GlobalScanner: Sendable {
                                 capturedAt: Date())
     }
 
-    static func status(for error: HTTPError) -> StorefrontQueryStatus {
+    static func lookupOutcome(for error: HTTPError) -> LookupOutcome {
         switch error {
-        case .badStatus(404): return .notListed
         case .badStatus(429): return .rateLimited
-        default: return .networkError
+        default: return .failed
+        }
+    }
+
+    static func catalogOutcome(for error: HTTPError) -> CatalogOutcome {
+        switch error {
+        case .badStatus(404): return .notFound
+        case .badStatus(429): return .rateLimited
+        default: return .failed
         }
     }
 }

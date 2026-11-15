@@ -8,22 +8,26 @@
 - 商店集合：`GlobalIAPRadar/Resources/storefronts.json`，共 **175** 个（来自 appstore-ppp-pricing-agent-skill 的 `countries.csv`，经 mledoze/countries 映射 alpha-3 → alpha-2，并手工补充 Apple 专用代码 `xk` = Kosovo）
 - 汇率未参与本报告（报告只统计"是否取到当地原始价格"）
 
-## 1. 覆盖结果
+## 1. 覆盖结果（2026-11-15 重跑，带 429/5xx 退避重试，并发 3）
 
-| 应用 | App ID | 有 IAP 数据 | 上架但未返回 IAP | 查询失败（查空） | SKU 数 | 单 SKU 最高覆盖 |
-| --- | --- | --- | --- | --- | --- | --- |
-| ChatGPT | 6448311069 | 148 (84.6%) | 21 | 6 | 10 | 148 |
-| Clash Royale | 1053012308 | 97 (55.4%) | 74 | 4 | 51 | 83 |
-| WeChat | 414478124 | 87 (49.7%) | 87 | 1 | 66 | 64 |
-| Genshin Impact | 1517783697 | 78 (44.6%) | 94 | 3 | 22 | 74 |
-| Notion | 1232780281 | 55 (31.4%) | 119 | 1 | 4 | 55 |
-| Spotify | 324684580 | 0 (0%) | 169 | 6 | 0 | — |
+| 应用 | App ID | 有 IAP 数据 | 未上架（lookup 空） | 限流失败 | 数据源确无 IAP | SKU 数 | 单 SKU 最高覆盖 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| ChatGPT | 6448311069 | **164 (93.7%)** | 6 | 5 | 0 | 10 | 164 |
+| Notion | 1232780281 | **174 (99.4%)** | 1 | 0 | 0 | 4 | 174 |
+| Genshin Impact | 1517783697 | **171 (97.7%)** | 2 | 2 | 0 | 23 | 165 |
+| Clash Royale | 1053012308 | **167 (95.4%)** | 4 | 4 | 0 | 58 | 142 |
+| WeChat | 414478124 | **166 (94.9%)** | 1 | 8 | 0 | 76 | 123 |
+| Spotify | 324684580 | **0** | 6 | 9 | **160** | 0 | — |
 
 ### 怎么读这张表
 
 - **有 IAP 数据**：catalog 接口返回 200 且 `views.top-in-app-purchasables.data` 非空。
-- **上架但未返回 IAP**：iTunes Lookup 有该应用（证明已在该商店上架），但 catalog 的内购视图为空。实测 Spotify 属于这一类——其 App Store 公开商品页本身也不展示内购商品列表，因此这不是接口缺陷，而是 Apple 公开数据本身没有。
-- **查询失败（查空）**：iTunes Lookup `resultCount = 0`，通常意味着该商店没有这个 App（如 ChatGPT 在中国大陆商店不可用）。**这类状态在应用里被标记为"该地区未上架"，绝不会当成 0 元。**
+- **未上架（lookup 空）**：iTunes Lookup 返回 200 但 `resultCount = 0`（Apple 自己说的「该商店不出售此 App」），且 catalog 同时 404——两处来源一致才标「未上架」。**绝不会把网络失败标成未上架**。
+- **限流失败**：重试后仍 HTTP 429，明确标为「请求被限流」，可一键重试，不是价格数据。
+- **数据源确无 IAP**：catalog 返回 200 但内购视图为空（Spotify 属此类，其 App Store 公开页面本身也不展示内购区块）。
+- **错误 App ID**：误用 ID（如 Clash Royale 的 1504435335）会 175/175 查空，被标「未上架/查询失败」，绝不输出 0 元价格。
+
+> 早期快照（无退避重试）因大量 429 把覆盖率低估到 55–85%；带退避后 ChatGPT 实际可达 164/175。应用内引擎同样对 429 做指数退避，并允许对失败区重扫。
 
 ## 2. 数据源能力边界（关键结论）
 
@@ -66,11 +70,11 @@
 
 | 商品 ID | 商品 | 出现商店数 | 价格样例 |
 | --- | --- | --- | --- |
-| 6448311597 | ChatGPT Plus（ChatGPT Plan · L4 · P1M） | 148 | AE AED 79.99 · AG USD 19.99 · AM USD 22.99 · TR TRY 999,99 · IN ₹399 · JP ¥3,000 |
-| 6749460546 | ChatGPT Go（ChatGPT Plan · L5 · P1M） | 148 | AE AED 29.99 · US USD 8.00 · AM USD 6.99 |
-| 6759817441 | ChatGPT Pro 100（ChatGPT Plan · L3 · P1M） | 148 | AE AED 384.99 · US USD 100.00 · AM USD 119.99 |
-| 6745416289 | ChatGPT Plus（P1Y 年度） | 148 | 与月付 ID 不同，未被合并 |
-| 6757568473 | 100 Credits（非订阅消耗型） | 148 | AE AED 15.99 / US USD 4.00 |
+| 6448311597 | ChatGPT Plus（ChatGPT Plan · L4 · P1M） | 164 | AE AED 79.99 · US USD 19.99 · AM USD 22.99 · TR TRY 999,99 · IN ₹399 · JP ¥3,000 |
+| 6749460546 | ChatGPT Go（ChatGPT Plan · L5 · P1M） | 164 | AE AED 29.99 · US USD 8.00 · AF USD 5.00 |
+| 6759817441 | ChatGPT Pro 100（ChatGPT Plan · L3 · P1M） | 164 | AE AED 384.99 · US USD 100.00 · AM USD 119.99 |
+| 6745416289 | ChatGPT Plus（P1Y 年度） | 164 | 与月付 ID 不同，未被合并 |
+| 6757568473 | 100 Credits（非订阅消耗型） | — | AE AED 15.99 / US USD 4.00 |
 
 结论：**同一商品在不同商店共用同一个 Apple 商品 ID**，因此对齐是精确匹配（置信度 1.0），
 月付与年付、Plus 与 Pro、100 钻与 1000 钻天然是不同 ID，不会被错误合并。
@@ -80,12 +84,25 @@
 | 现象 | 实测 | 应用处理 |
 | --- | --- | --- |
 | App Store ID 写错 | Clash Royale 误用 1504435335 → 175/175 查空 | 标记"未上架/查询失败"，不会输出 0 元价格 |
-| App 在某商店不可售 | ChatGPT 在 `cn` 返回 404 | 标记"该地区未上架"，并区分于网络错误 |
+| App 在某商店不可售 | ChatGPT 在 `cn`：lookup 200 + resultCount 0，catalog 404 | **两处来源一致**才标"该地区未上架"；任一查询失败都绝不标未上架 |
+| catalog 404 但 lookup 说已上架 | 引擎旧版曾误标"未上架"，已修复 | 标记"内购目录查询失败"（`catalogUnavailable`），可重试 |
+| HTTP 429 限流 | 重试退避后仍可能发生（单 App 全量扫描 5–9 个区） | 标记"请求被限流"，可一键重试失败区；绝不当成无数据 |
 | 中国商店接口可用 | WeChat 在 `cn` 返回正常数据 | 中国区纳入统计 |
-| 无内购视图 | Spotify 在 169 个商店返回 200 但内购为空 | 标记"数据源未返回 IAP" |
+| 无内购视图 | Spotify 在 160 个商店返回 200 但内购为空 | 标记"数据源未返回 IAP"（与"查询失败"严格区分） |
 | 商店代码非 ISO | Kosovo 的 ISO 3166 无对应项 | 手工补充 Apple 代码 `xk`，实测 iTunes 与 catalog 均返回 200 |
 
-## 5. 复现方式
+## 5. 构建与测试验证（GitHub Actions，macOS 真机工具链）
+
+- 工作流 `.github/workflows/ios-build.yml`，run **43725807854**（commit 1836f2e）**全绿**：
+  - `data-engine`：Ubuntu 上对 Apple 真实 API 做 175 区全量扫描，成功并上传快照
+  - `ios`：Xcode 16.4 + iPhone SE (3rd generation) iOS 18.5 模拟器（脚本按 SDK 版本自动配对，见 `scripts/select_simulator.py`）
+    - Release `iphoneos` 构建 **BUILD SUCCEEDED**
+    - 单元测试 **Executed 10 tests, 0 failures — TEST SUCCEEDED**（含新增的状态合成诚实性测试 `StatusCompositionTests`）
+    - 产出未签名 IPA artifact `GlobalIAPRadar-unsigned-ipa`（约 0.5 MB，含可执行文件 1.9 MB + 175 区数据库）
+- 本地 IPA 已归档：`GlobalIAPRadar-unsigned.ipa`，SHA-256 `b14e08fdc3be0b18822bf3cf005a740fe19fdcb49d0d2c7b6c512ca6a2b169ca`
+- 签名 IPA 走 `signed-ipa.yml`（workflow_dispatch，证书/描述文件放在仓库 secrets，个人免费 Apple ID 可用，7 天重签）
+
+## 6. 复现方式
 
 ```bash
 # 全量扫描一个应用（175 个商店，输出 JSON 快照 + 覆盖率摘要）
