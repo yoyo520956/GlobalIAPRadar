@@ -151,7 +151,7 @@ enum L10n {
         case .consumable: return language == .zh ? "消耗型内购" : "Consumable"
         case .nonConsumable: return language == .zh ? "非消耗型内购" : "Non-consumable"
         case .subscription: return language == .zh ? "订阅" : "Subscription"
-        case .unknown: return language == .zh ? "未知类型" : "Unknown"
+        case .unknown: return language == .zh ? "非订阅内购（类型未公开）" : "Non-subscription (type not exposed)"
         }
     }
 }
