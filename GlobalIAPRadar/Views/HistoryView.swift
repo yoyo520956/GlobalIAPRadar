@@ -2,29 +2,24 @@ import Foundation
 import SwiftUI
 import Charts
 
+enum HistoryRange: Int, CaseIterable, Identifiable {
+    case d7 = 7
+    case d30 = 30
+    case d90 = 90
+    case d180 = 180
+
+    var id: Int { rawValue }
+
+    func label(_ language: AppLanguage) -> String {
+        language == .zh ? "近 \(rawValue) 天" : "Last \(rawValue) days"
+    }
+}
+
 struct HistoryView: View {
     @Environment(AppState.self) private var appState
     @State private var selectedAppID: String?
     @State private var selectedProductID: String?
-    @State private var range: HistoryRange = .days30
-
-    enum HistoryRange: Int, CaseIterable, Identifiable {
-        case days7 = 7
-        case days30 = 30
-        case days90 = 90
-        case days180 = 180
-
-        var id: Int { rawValue }
-
-        func label(_ language: AppLanguage) -> String {
-            switch self {
-            case .days7: return L10n.t("history.range7", language)
-            case .days30: return L10n.t("history.range30", language)
-            case .days90: return L10n.t("history.range90", language)
-            case .days180: return L10n.t("history.range180", language)
-            }
-        }
-    }
+    @State private var range: HistoryRange = .d30
 
     private var language: AppLanguage { appState.settings.language }
 
@@ -33,10 +28,13 @@ struct HistoryView: View {
     }
 
     private var productIDs: [String] {
-        let scope = appState.snapshots.filter { $0.appID == selectedAppID }
-        var names: [String: String] = [:]
-        for snapshot in scope { names[snapshot.productID] = snapshot.productName }
-        return names.keys.sorted { (names[$0] ?? "") < (names[$1] ?? "") }
+        appState.snapshots
+            .filter { selectedAppID == nil || $0.appID == selectedAppID }
+            .map(\.productID)
+            .reduce(into: [String]()) { result, id in
+                if !result.contains(id) { result.append(id) }
+            }
+            .sorted()
     }
 
     private var series: [PriceSnapshot] {
@@ -48,19 +46,23 @@ struct HistoryView: View {
             .sorted { $0.capturedAt < $1.capturedAt }
     }
 
-    private var chartPoints: [(snapshot: PriceSnapshot, converted: Double)] {
+    private struct HistoryPoint: Identifiable {
+        let id: UUID
+        let date: Date
+        let value: Double
+    }
+
+    private var chartPoints: [HistoryPoint] {
         series.compactMap { snapshot in
             guard let converted = appState.converted(snapshot.price, from: snapshot.currency) else { return nil }
-            return (snapshot, converted)
+            return HistoryPoint(id: snapshot.id, date: snapshot.capturedAt, value: converted)
         }
     }
 
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    pickers
-                }
+                Section { pickers }
                 if chartPoints.count < 2 {
                     Section {
                         Text(L10n.t("history.empty", language))
@@ -89,8 +91,8 @@ struct HistoryView: View {
         }
     }
 
-    /// Extracted into its own property so the Chart builder closure stays small
-    /// enough for the compiler to type-check quickly.
+    /// Split out so the Chart builder closure stays small enough for the
+    /// compiler to type-check in reasonable time.
     @ViewBuilder
     private var chart: some View {
         let currency = appState.settings.displayCurrency
