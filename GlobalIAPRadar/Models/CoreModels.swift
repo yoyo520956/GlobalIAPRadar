@@ -75,7 +75,10 @@ struct IAPProduct: Identifiable, Codable, Hashable, Sendable {
             }
         }
         if isSubscription { return .subscription }
-        return period == nil ? .consumable : .unknown
+        if period != nil { return .subscription }
+        // Apple's public catalog does not expose consumable vs non-consumable,
+        // so guessing one would be fabrication. Report it as undetermined.
+        return .unknown
     }
 
     /// Subscription tier label, e.g. "ChatGPT Plan · L4".
