@@ -35,21 +35,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '16.2'
-
       - name: Install XcodeGen
         run: brew install xcodegen
 
       - name: Generate Xcode project
         run: xcodegen generate
 
+      # The macOS runners ship several Xcode versions and several simulator
+      # runtimes. A device chosen from `simctl` alone can belong to a runtime
+      # the selected Xcode cannot host, which makes xcodebuild reject the
+      # destination. This step asks Xcode directly which destinations are
+      # eligible and exports a verified (Xcode, simulator) pair.
+      - name: Select Xcode and simulator
+        id: toolchain
+        run: |
+          set -eo pipefail
+          mkdir -p build
+          python3 scripts/select_simulator.py | tee build/toolchain.json
+          echo "DEVELOPER_DIR=${{ steps.toolchain.outputs.xcode_path }}" >> "$GITHUB_ENV"
+
       - name: Show toolchain
         run: |
           xcodebuild -version
           swift --version
           xcodegen --version
+          echo "Xcode selected: ${{ steps.toolchain.outputs.xcode_path }}"
+          echo "Simulator: ${{ steps.toolchain.outputs.sim_name }} (iOS ${{ steps.toolchain.outputs.sim_os }})"
 
       - name: Build release (unsigned)
         run: |
@@ -59,40 +70,11 @@ jobs:
             -sdk iphoneos -configuration Release -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build | tee build/build.log
 
-      - name: Resolve simulator
-        id: sim
-        run: |
-          UDID=$(xcrun simctl list devices available -j | python3 -c "
-          import json, sys
-          data = json.load(sys.stdin).get('devices', {})
-          fallback = None
-          for runtime, devices in data.items():
-              for dev in devices:
-                  if not dev.get('isAvailable'):
-                      continue
-                  name = dev.get('name', '')
-                  if fallback is None and name.startswith('iPhone'):
-                      fallback = dev['udid']
-                  if name == 'iPhone SE (3rd generation)':
-                      fallback = dev['udid']
-                      break
-              if fallback and fallback == dev.get('udid') and dev.get('name') == 'iPhone SE (3rd generation)':
-                  break
-          print(fallback or '')
-          ")
-          if [ -z "$UDID" ]; then
-            echo "No available iPhone simulator found" >&2
-            exit 1
-          fi
-          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
-          echo "Using simulator: $UDID"
-          xcrun simctl list devices available | head -40
-
       - name: Run unit tests
         run: |
           set -eo pipefail
           xcodebuild -project GlobalIAPRadar.xcodeproj -scheme GlobalIAPRadar \
-            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -destination "platform=iOS Simulator,id=${{ steps.toolchain.outputs.sim_udid }}" \
             CODE_SIGNING_ALLOWED=NO test | tee build/test.log
 
       - name: Package unsigned IPA
@@ -109,3 +91,11 @@ jobs:
         with:
           name: GlobalIAPRadar-unsigned-ipa
           path: GlobalIAPRadar-unsigned.ipa
+
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: build/*.log
+          if-no-files-found: ignore

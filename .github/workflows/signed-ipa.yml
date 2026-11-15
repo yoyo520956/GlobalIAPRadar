@@ -26,9 +26,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '16.2'
+      - name: Select Xcode
+        run: |
+          set -eo pipefail
+          # Xcode 16.2 is the toolchain the unsigned build was verified with.
+          # Fall back to the image default if the runner image stops shipping it.
+          if [ -d /Applications/Xcode_16.2.app ]; then
+            echo "DEVELOPER_DIR=/Applications/Xcode_16.2.app" >> "$GITHUB_ENV"
+          else
+            echo "DEVELOPER_DIR=$(xcode-select -p)" >> "$GITHUB_ENV"
+          fi
+          xcodebuild -version
 
       - name: Install XcodeGen
         run: brew install xcodegen
