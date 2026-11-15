@@ -88,21 +88,41 @@
 | catalog 404 但 lookup 说已上架 | 引擎旧版曾误标"未上架"，已修复 | 标记"内购目录查询失败"（`catalogUnavailable`），可重试 |
 | HTTP 429 限流 | 重试退避后仍可能发生（单 App 全量扫描 5–9 个区） | 标记"请求被限流"，可一键重试失败区；绝不当成无数据 |
 | 中国商店接口可用 | WeChat 在 `cn` 返回正常数据 | 中国区纳入统计 |
-| 无内购视图 | Spotify 在 160 个商店返回 200 但内购为空 | 标记"数据源未返回 IAP"（与"查询失败"严格区分） |
+| 无内购视图（`views` 里没有 `top-in-app-purchasables`） | Spotify 在 160 个商店返回 200 且视图为空数组 | 视图**存在但为空** → 标记"数据源未返回 IAP"；视图**缺失** → 判为"内购目录查询失败"（这是 2026-11-15 线上 bug 的修复点，见第 7 节） |
 | 商店代码非 ISO | Kosovo 的 ISO 3166 无对应项 | 手工补充 Apple 代码 `xk`，实测 iTunes 与 catalog 均返回 200 |
 
 ## 5. 构建与测试验证（GitHub Actions，macOS 真机工具链）
 
-- 工作流 `.github/workflows/ios-build.yml`，run **43736153825**（commit 8ae8b7e）**全绿**：
+- 工作流 `.github/workflows/ios-build.yml`，run **43756877909**（commit c937a919）**全绿**：
   - `data-engine`：Ubuntu 上对 Apple 真实 API 做 175 区全量扫描，成功并上传快照
   - `ios`：Xcode 16.4 + iPhone SE (3rd generation) iOS 18.5 模拟器（脚本按 SDK 版本自动配对，见 `scripts/select_simulator.py`）
     - Release `iphoneos` 构建 **BUILD SUCCEEDED**
-    - 单元测试 **Executed 16 tests, 0 failures — TEST SUCCEEDED**（含状态合成诚实性测试 `StatusCompositionTests` 6 例）
+    - 单元测试 **Executed 20 tests, 0 failures — TEST SUCCEEDED**（含新增 `CatalogDecodingTests` 4 例，用真实抓取的响应做夹具，锁死 kebab-case 键名）
     - 产出未签名 IPA artifact `GlobalIAPRadar-unsigned-ipa`（约 0.5 MB，含可执行文件 + 175 区数据库）
-- 本地 IPA 已归档：`GlobalIAPRadar-unsigned.ipa`，SHA-256 `5d85be1042341d19d435844e9f824e9fba12347f95cc9c2ad6e97c8281432ff3`（484,135 字节，内含 1.94 MB Mach-O 可执行文件、Info.plist、175 区 storefronts.json）
+- 本地 IPA 已归档：`GlobalIAPRadar-unsigned.ipa`，SHA-256 `36c9fa3d408e64106107c5e156431141d16fd65d9144fe70f9a21ad55002ab85`（485,046 字节，内含 1.94 MB Mach-O 可执行文件、Info.plist、175 区 storefronts.json）
 - 签名 IPA 走 `signed-ipa.yml`（workflow_dispatch，证书/描述文件放在仓库 secrets，个人免费 Apple ID 可用，7 天重签）
 
-## 6. 复现方式
+## 6. 2026-11-15 线上 bug：kebab-case 键名导致 175/175 显示"数据源未返回 IAP"
+
+用户在 iPhone 上装机后发现所有商店都报"数据源未返回 IAP"（含 AE、AF、AG 这些确有内购的区），根因是**解码失败被误报成"无数据"**：
+
+| 环节 | 问题 |
+| --- | --- |
+| 接口契约 | catalog 响应里的键是 `top-in-app-purchasables`（**kebab-case**），而模型声明的是 `topInAppPurchasables`（camelCase），`JSONDecoder()` 没做键名转换 → 解码恒为 `nil` |
+| 错误分类 | 解码结果为 `nil` 时，旧代码把它和"Apple 明确返回无 IAP"混为一谈 → 全部标成"数据源未返回 IAP" |
+| 测试盲区 | CI 只跑 Python 探测脚本，Swift 的 catalog 解码**从未对真实响应验证过**，所以编译和 16 个测试全绿也挡不住这个 bug |
+
+修复（commit `c937a919`）：
+
+1. `CatalogViews` 改为自定义解码，同时接受 `top-in-app-purchasables` / `topInAppPurchasables` / `top_in_app_purchasables` 三种写法
+2. 商品类型 `type` 从 **item 层**读取（Apple 公开 catalog 只给 `in-apps`，不区分消耗型/非消耗型）；无法区分时 kind 返回 `unknown`，界面显示"非订阅内购（类型未公开）"，**不再假装能分**
+3. `CatalogSnapshot` 增加 `iapViewPresent`：响应里**根本没有 IAP 视图**时判为"查询失败"而不是"无数据"，这个静默失败路径被堵住
+4. 新增 `GlobalIAPRadarTests/Fixtures/catalog_us_chatgpt.json`（真实抓取的 ChatGPT US 响应）+ `CatalogDecodingTests` 4 例，其中一例专门注入"视图缺失"故障，断言它不被当成无数据
+5. 受影响的相关结构体从 `private` 提升为 `internal`（否则编译报 `property must be declared fileprivate because its type uses a private type`）
+
+手动实测（对 ChatGPT id 6448311069）：US 9 项、AE 6 项、AF 6 项、JP 6 项、BR 6 项，`cn` 确无 IAP 视图且 lookup `resultCount=0` → 正确判"未上架"；429 限流判"请求被限流"并进入重试。
+
+## 7. 复现方式
 
 ```bash
 # 全量扫描一个应用（175 个商店，输出 JSON 快照 + 覆盖率摘要）
