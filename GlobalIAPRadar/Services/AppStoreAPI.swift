@@ -203,7 +203,7 @@ struct CatalogItemAttributes: Decodable {
     let offers: [CatalogOffer]?
 }
 
-private struct CatalogOffer: Decodable {
+struct CatalogOffer: Decodable {
     let price: FlexibleDouble?
     let priceFormatted: String?
     let currencyCode: String?
