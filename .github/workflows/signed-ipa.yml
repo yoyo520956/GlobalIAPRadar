@@ -29,13 +29,11 @@ jobs:
       - name: Select Xcode
         run: |
           set -eo pipefail
-          # Xcode 16.2 is the toolchain the unsigned build was verified with.
-          # Fall back to the image default if the runner image stops shipping it.
-          if [ -d /Applications/Xcode_16.2.app ]; then
-            echo "DEVELOPER_DIR=/Applications/Xcode_16.2.app" >> "$GITHUB_ENV"
-          else
-            echo "DEVELOPER_DIR=$(xcode-select -p)" >> "$GITHUB_ENV"
-          fi
+          python3 scripts/select_simulator.py --mode device
+          # the script writes build/xcode-env.sh with export lines
+          . build/xcode-env.sh
+          echo "chosen Xcode $XCODE_VERSION at $XCODE_PATH (iphoneos SDK $IPHONEOS_SDK)"
+          echo "DEVELOPER_DIR=$XCODE_PATH" >> "$GITHUB_ENV"
           xcodebuild -version
 
       - name: Install XcodeGen

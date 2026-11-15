@@ -60,7 +60,23 @@ jobs:
           swift --version
           xcodegen --version
           echo "Xcode selected: ${{ steps.toolchain.outputs.xcode_path }}"
-          echo "Simulator: ${{ steps.toolchain.outputs.sim_name }} (iOS ${{ steps.toolchain.outputs.sim_os }})"
+          echo "Simulator: ${{ steps.toolchain.outputs.sim_name }} (iOS ${{ steps.toolchain.outputs.simulator_sdk }})"
+          echo "Simulator runtime: ${{ steps.toolchain.outputs.sim_runtime }}"
+
+      # The signing workflow builds for a real device (iphoneos SDK) instead of
+      # a simulator, and that is a different selection problem: newest Xcode
+      # whose iphoneos SDK answers xcodebuild, not the lowest one with a runtime.
+      # It runs here so the device selection is proven on a real macOS runner
+      # before anyone supplies signing secrets.
+      - name: Validate device toolchain selection
+        run: |
+          set -eo pipefail
+          python3 scripts/select_simulator.py --mode device | tee build/device-toolchain.json
+          # NOTE: deliberately does NOT touch DEVELOPER_DIR. The build below stays
+          # on the simulator-verified toolchain; this step only proves that the
+          # device-mode selection the signing workflow relies on works.
+          . build/xcode-env.sh
+          echo "device Xcode that signed-ipa.yml would use: $XCODE_VERSION at $XCODE_PATH (iphoneos SDK $IPHONEOS_SDK)"
 
       - name: Build release (unsigned)
         run: |
