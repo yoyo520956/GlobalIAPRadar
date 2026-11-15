@@ -52,8 +52,9 @@ final class HTTPClient: @unchecked Sendable {
                 throw HTTPError.badStatus(http.statusCode)
             } catch is CancellationError {
                 throw CancellationError()
-            } catch let error as HTTPError where case .badStatus = error {
-                throw error
+            } catch let httpError as HTTPError {
+                // Non-retryable HTTP errors (404 etc.) propagate immediately.
+                throw httpError
             } catch {
                 lastError = error
                 try await backoff(attempt: attempt, retryAfter: nil)

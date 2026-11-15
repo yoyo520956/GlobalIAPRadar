@@ -69,32 +69,8 @@ struct HistoryView: View {
                     }
                 } else {
                     Section {
-                        Chart(chartPoints) { point in
-                            LineMark(
-                                x: .value("date", point.date),
-                                y: .value("price", point.value)
-                            )
-                            .interpolationMethod(.monotone)
-                            .foregroundStyle(Color.accentColor)
-
-                            PointMark(
-                                x: .value("date", point.date),
-                                y: .value("price", point.value)
-                            )
-                            .foregroundStyle(Color.accentColor)
-                        }
-                        .chartYAxis {
-                            AxisMarks { value in
-                                AxisGridLine()
-                                AxisValueLabel {
-                                    if let amount = value.as(Double.self) {
-                                        Text(amount.formatted(.currency(code: appState.settings.displayCurrency)))
-                                            .font(.caption2)
-                                    }
-                                }
-                            }
-                        }
-                        .frame(height: 190)
+                        chart
+                            .frame(height: 190)
                     } header: {
                         Text(selectedProductName)
                             .font(.subheadline.weight(.semibold))
@@ -109,6 +85,31 @@ struct HistoryView: View {
             }
             .onChange(of: selectedAppID) { _, _ in
                 selectedProductID = productIDs.first
+            }
+        }
+    }
+
+    /// Extracted into its own property so the Chart builder closure stays small
+    /// enough for the compiler to type-check quickly.
+    @ViewBuilder
+    private var chart: some View {
+        let currency = appState.settings.displayCurrency
+        Chart(chartPoints) { point in
+            LineMark(x: .value("date", point.date), y: .value("price", point.value))
+                .interpolationMethod(.monotone)
+                .foregroundStyle(Color.accentColor)
+            PointMark(x: .value("date", point.date), y: .value("price", point.value))
+                .foregroundStyle(Color.accentColor)
+        }
+        .chartYAxis {
+            AxisMarks { value in
+                AxisGridLine()
+                AxisValueLabel {
+                    if let amount = value.as(Double.self) {
+                        Text(amount.formatted(.currency(code: currency)))
+                            .font(.caption2)
+                    }
+                }
             }
         }
     }
