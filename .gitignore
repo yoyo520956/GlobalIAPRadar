@@ -8,3 +8,7 @@ xcuserdata/
 *.app
 Payload/
 .DS_Store
+
+# Python bytecode caches
+__pycache__/
+*.pyc
