@@ -166,7 +166,13 @@ struct GlobalScanner: Sendable {
         do {
             let snapshot = try await catalog.fetchProducts(appID: app.appID, storefront: code)
             products = snapshot.products
-            catalogOutcome = products.isEmpty ? .empty : .products(products)
+            if !snapshot.iapViewPresent {
+                // 200 OK but no IAP view in the payload: we could not read the
+                // data -- never report that as "the app has no IAPs".
+                catalogOutcome = .failed
+            } else {
+                catalogOutcome = products.isEmpty ? .empty : .products(products)
+            }
         } catch let error as HTTPError {
             catalogOutcome = Self.catalogOutcome(for: error)
         } catch {
