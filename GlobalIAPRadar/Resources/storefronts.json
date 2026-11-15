@@ -1,0 +1,1578 @@
+[
+ {
+  "storefront": "ae",
+  "alpha3": "ARE",
+  "nameEn": "United Arab Emirates",
+  "nameZh": "阿拉伯联合酋长国",
+  "currency": null,
+  "isoCurrency": "AED",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "af",
+  "alpha3": "AFG",
+  "nameEn": "Afghanistan",
+  "nameZh": "阿富汗",
+  "currency": null,
+  "isoCurrency": "AFN",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ag",
+  "alpha3": "ATG",
+  "nameEn": "Antigua and Barbuda",
+  "nameZh": "安提瓜和巴布达",
+  "currency": null,
+  "isoCurrency": "XCD",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "ai",
+  "alpha3": "AIA",
+  "nameEn": "Anguilla",
+  "nameZh": "安圭拉",
+  "currency": null,
+  "isoCurrency": "XCD",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "al",
+  "alpha3": "ALB",
+  "nameEn": "Albania",
+  "nameZh": "阿尔巴尼亚",
+  "currency": null,
+  "isoCurrency": "ALL",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "am",
+  "alpha3": "ARM",
+  "nameEn": "Armenia",
+  "nameZh": "亚美尼亚",
+  "currency": null,
+  "isoCurrency": "AMD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ao",
+  "alpha3": "AGO",
+  "nameEn": "Angola",
+  "nameZh": "安哥拉",
+  "currency": null,
+  "isoCurrency": "AOA",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ar",
+  "alpha3": "ARG",
+  "nameEn": "Argentina",
+  "nameZh": "阿根廷",
+  "currency": null,
+  "isoCurrency": "ARS",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "at",
+  "alpha3": "AUT",
+  "nameEn": "Austria",
+  "nameZh": "奥地利",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "au",
+  "alpha3": "AUS",
+  "nameEn": "Australia",
+  "nameZh": "澳大利亚",
+  "currency": null,
+  "isoCurrency": "AUD",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "az",
+  "alpha3": "AZE",
+  "nameEn": "Azerbaijan",
+  "nameZh": "阿塞拜疆",
+  "currency": null,
+  "isoCurrency": "AZN",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ba",
+  "alpha3": "BIH",
+  "nameEn": "Bosnia and Herzegovina",
+  "nameZh": "波斯尼亚和黑塞哥维那",
+  "currency": null,
+  "isoCurrency": "BAM",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "bb",
+  "alpha3": "BRB",
+  "nameEn": "Barbados",
+  "nameZh": "巴巴多斯",
+  "currency": null,
+  "isoCurrency": "BBD",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "be",
+  "alpha3": "BEL",
+  "nameEn": "Belgium",
+  "nameZh": "比利时",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "bf",
+  "alpha3": "BFA",
+  "nameEn": "Burkina Faso",
+  "nameZh": "布基纳法索",
+  "currency": null,
+  "isoCurrency": "XOF",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "bg",
+  "alpha3": "BGR",
+  "nameEn": "Bulgaria",
+  "nameZh": "保加利亚",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "bh",
+  "alpha3": "BHR",
+  "nameEn": "Bahrain",
+  "nameZh": "巴林",
+  "currency": null,
+  "isoCurrency": "BHD",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "bj",
+  "alpha3": "BEN",
+  "nameEn": "Benin",
+  "nameZh": "贝宁",
+  "currency": null,
+  "isoCurrency": "XOF",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "bm",
+  "alpha3": "BMU",
+  "nameEn": "Bermuda",
+  "nameZh": "百慕大",
+  "currency": null,
+  "isoCurrency": "BMD",
+  "pppCategory": "premium"
+ },
+ {
+  "storefront": "bn",
+  "alpha3": "BRN",
+  "nameEn": "Brunei",
+  "nameZh": "文莱",
+  "currency": null,
+  "isoCurrency": "BND,SGD",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "bo",
+  "alpha3": "BOL",
+  "nameEn": "Bolivia",
+  "nameZh": "玻利维亚",
+  "currency": null,
+  "isoCurrency": "BOB",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "br",
+  "alpha3": "BRA",
+  "nameEn": "Brazil",
+  "nameZh": "巴西",
+  "currency": null,
+  "isoCurrency": "BRL",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "bs",
+  "alpha3": "BHS",
+  "nameEn": "Bahamas",
+  "nameZh": "巴哈马",
+  "currency": null,
+  "isoCurrency": "BSD,USD",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "bt",
+  "alpha3": "BTN",
+  "nameEn": "Bhutan",
+  "nameZh": "不丹",
+  "currency": null,
+  "isoCurrency": "BTN,INR",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "bw",
+  "alpha3": "BWA",
+  "nameEn": "Botswana",
+  "nameZh": "博茨瓦纳",
+  "currency": null,
+  "isoCurrency": "BWP",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "by",
+  "alpha3": "BLR",
+  "nameEn": "Belarus",
+  "nameZh": "白俄罗斯",
+  "currency": null,
+  "isoCurrency": "BYN",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "bz",
+  "alpha3": "BLZ",
+  "nameEn": "Belize",
+  "nameZh": "伯利兹",
+  "currency": null,
+  "isoCurrency": "BZD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ca",
+  "alpha3": "CAN",
+  "nameEn": "Canada",
+  "nameZh": "加拿大",
+  "currency": null,
+  "isoCurrency": "CAD",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "cd",
+  "alpha3": "COD",
+  "nameEn": "DR Congo",
+  "nameZh": "民主刚果",
+  "currency": null,
+  "isoCurrency": "CDF",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "cg",
+  "alpha3": "COG",
+  "nameEn": "Congo",
+  "nameZh": "刚果",
+  "currency": null,
+  "isoCurrency": "XAF",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ch",
+  "alpha3": "CHE",
+  "nameEn": "Switzerland",
+  "nameZh": "瑞士",
+  "currency": null,
+  "isoCurrency": "CHF",
+  "pppCategory": "premium"
+ },
+ {
+  "storefront": "ci",
+  "alpha3": "CIV",
+  "nameEn": "Ivory Coast",
+  "nameZh": "科特迪瓦",
+  "currency": null,
+  "isoCurrency": "XOF",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "cl",
+  "alpha3": "CHL",
+  "nameEn": "Chile",
+  "nameZh": "智利",
+  "currency": null,
+  "isoCurrency": "CLP",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "cm",
+  "alpha3": "CMR",
+  "nameEn": "Cameroon",
+  "nameZh": "喀麦隆",
+  "currency": null,
+  "isoCurrency": "XAF",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "cn",
+  "alpha3": "CHN",
+  "nameEn": "China",
+  "nameZh": "中国",
+  "currency": null,
+  "isoCurrency": "CNY",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "co",
+  "alpha3": "COL",
+  "nameEn": "Colombia",
+  "nameZh": "哥伦比亚",
+  "currency": null,
+  "isoCurrency": "COP",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "cr",
+  "alpha3": "CRI",
+  "nameEn": "Costa Rica",
+  "nameZh": "哥斯达黎加",
+  "currency": null,
+  "isoCurrency": "CRC",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "cv",
+  "alpha3": "CPV",
+  "nameEn": "Cape Verde",
+  "nameZh": "佛得角",
+  "currency": null,
+  "isoCurrency": "CVE",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "cy",
+  "alpha3": "CYP",
+  "nameEn": "Cyprus",
+  "nameZh": "塞浦路斯",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "cz",
+  "alpha3": "CZE",
+  "nameEn": "Czechia",
+  "nameZh": "捷克",
+  "currency": null,
+  "isoCurrency": "CZK",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "de",
+  "alpha3": "DEU",
+  "nameEn": "Germany",
+  "nameZh": "德国",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "dk",
+  "alpha3": "DNK",
+  "nameEn": "Denmark",
+  "nameZh": "丹麦",
+  "currency": null,
+  "isoCurrency": "DKK",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "dm",
+  "alpha3": "DMA",
+  "nameEn": "Dominica",
+  "nameZh": "多米尼加",
+  "currency": null,
+  "isoCurrency": "XCD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "do",
+  "alpha3": "DOM",
+  "nameEn": "Dominican Republic",
+  "nameZh": "多明尼加",
+  "currency": null,
+  "isoCurrency": "DOP",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "dz",
+  "alpha3": "DZA",
+  "nameEn": "Algeria",
+  "nameZh": "阿尔及利亚",
+  "currency": null,
+  "isoCurrency": "DZD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ec",
+  "alpha3": "ECU",
+  "nameEn": "Ecuador",
+  "nameZh": "厄瓜多尔",
+  "currency": null,
+  "isoCurrency": "USD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ee",
+  "alpha3": "EST",
+  "nameEn": "Estonia",
+  "nameZh": "爱沙尼亚",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "eg",
+  "alpha3": "EGY",
+  "nameEn": "Egypt",
+  "nameZh": "埃及",
+  "currency": null,
+  "isoCurrency": "EGP",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "es",
+  "alpha3": "ESP",
+  "nameEn": "Spain",
+  "nameZh": "西班牙",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "fi",
+  "alpha3": "FIN",
+  "nameEn": "Finland",
+  "nameZh": "芬兰",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "fj",
+  "alpha3": "FJI",
+  "nameEn": "Fiji",
+  "nameZh": "斐济",
+  "currency": null,
+  "isoCurrency": "FJD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "fm",
+  "alpha3": "FSM",
+  "nameEn": "Micronesia",
+  "nameZh": "密克罗尼西亚",
+  "currency": null,
+  "isoCurrency": null,
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "fr",
+  "alpha3": "FRA",
+  "nameEn": "France",
+  "nameZh": "法国",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "ga",
+  "alpha3": "GAB",
+  "nameEn": "Gabon",
+  "nameZh": "加蓬",
+  "currency": null,
+  "isoCurrency": "XAF",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "gb",
+  "alpha3": "GBR",
+  "nameEn": "United Kingdom",
+  "nameZh": "英国",
+  "currency": null,
+  "isoCurrency": "GBP",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "gd",
+  "alpha3": "GRD",
+  "nameEn": "Grenada",
+  "nameZh": "格林纳达",
+  "currency": null,
+  "isoCurrency": "XCD",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "ge",
+  "alpha3": "GEO",
+  "nameEn": "Georgia",
+  "nameZh": "格鲁吉亚",
+  "currency": null,
+  "isoCurrency": "GEL",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "gh",
+  "alpha3": "GHA",
+  "nameEn": "Ghana",
+  "nameZh": "加纳",
+  "currency": null,
+  "isoCurrency": "GHS",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "gm",
+  "alpha3": "GMB",
+  "nameEn": "Gambia",
+  "nameZh": "冈比亚",
+  "currency": null,
+  "isoCurrency": "GMD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "gr",
+  "alpha3": "GRC",
+  "nameEn": "Greece",
+  "nameZh": "希腊",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "gt",
+  "alpha3": "GTM",
+  "nameEn": "Guatemala",
+  "nameZh": "危地马拉",
+  "currency": null,
+  "isoCurrency": "GTQ",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "gw",
+  "alpha3": "GNB",
+  "nameEn": "Guinea-Bissau",
+  "nameZh": "几内亚比绍",
+  "currency": null,
+  "isoCurrency": "XOF",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "gy",
+  "alpha3": "GUY",
+  "nameEn": "Guyana",
+  "nameZh": "圭亚那",
+  "currency": null,
+  "isoCurrency": "GYD",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "hk",
+  "alpha3": "HKG",
+  "nameEn": "Hong Kong",
+  "nameZh": "香港",
+  "currency": null,
+  "isoCurrency": "HKD",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "hn",
+  "alpha3": "HND",
+  "nameEn": "Honduras",
+  "nameZh": "洪都拉斯",
+  "currency": null,
+  "isoCurrency": "HNL",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "hr",
+  "alpha3": "HRV",
+  "nameEn": "Croatia",
+  "nameZh": "克罗地亚",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "hu",
+  "alpha3": "HUN",
+  "nameEn": "Hungary",
+  "nameZh": "匈牙利",
+  "currency": null,
+  "isoCurrency": "HUF",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "id",
+  "alpha3": "IDN",
+  "nameEn": "Indonesia",
+  "nameZh": "印度尼西亚",
+  "currency": null,
+  "isoCurrency": "IDR",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ie",
+  "alpha3": "IRL",
+  "nameEn": "Ireland",
+  "nameZh": "爱尔兰",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "premium"
+ },
+ {
+  "storefront": "il",
+  "alpha3": "ISR",
+  "nameEn": "Israel",
+  "nameZh": "以色列",
+  "currency": null,
+  "isoCurrency": "ILS",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "in",
+  "alpha3": "IND",
+  "nameEn": "India",
+  "nameZh": "印度",
+  "currency": null,
+  "isoCurrency": "INR",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "iq",
+  "alpha3": "IRQ",
+  "nameEn": "Iraq",
+  "nameZh": "伊拉克",
+  "currency": null,
+  "isoCurrency": "IQD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "is",
+  "alpha3": "ISL",
+  "nameEn": "Iceland",
+  "nameZh": "冰岛",
+  "currency": null,
+  "isoCurrency": "ISK",
+  "pppCategory": "premium"
+ },
+ {
+  "storefront": "it",
+  "alpha3": "ITA",
+  "nameEn": "Italy",
+  "nameZh": "意大利",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "jm",
+  "alpha3": "JAM",
+  "nameEn": "Jamaica",
+  "nameZh": "牙买加",
+  "currency": null,
+  "isoCurrency": "JMD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "jo",
+  "alpha3": "JOR",
+  "nameEn": "Jordan",
+  "nameZh": "约旦",
+  "currency": null,
+  "isoCurrency": "JOD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "jp",
+  "alpha3": "JPN",
+  "nameEn": "Japan",
+  "nameZh": "日本",
+  "currency": null,
+  "isoCurrency": "JPY",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "ke",
+  "alpha3": "KEN",
+  "nameEn": "Kenya",
+  "nameZh": "肯尼亚",
+  "currency": null,
+  "isoCurrency": "KES",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "kg",
+  "alpha3": "KGZ",
+  "nameEn": "Kyrgyzstan",
+  "nameZh": "吉尔吉斯斯坦",
+  "currency": null,
+  "isoCurrency": "KGS",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "kh",
+  "alpha3": "KHM",
+  "nameEn": "Cambodia",
+  "nameZh": "柬埔寨",
+  "currency": null,
+  "isoCurrency": "KHR,USD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "kn",
+  "alpha3": "KNA",
+  "nameEn": "Saint Kitts and Nevis",
+  "nameZh": "圣基茨和尼维斯",
+  "currency": null,
+  "isoCurrency": "XCD",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "kr",
+  "alpha3": "KOR",
+  "nameEn": "South Korea",
+  "nameZh": "韩国",
+  "currency": null,
+  "isoCurrency": "KRW",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "kw",
+  "alpha3": "KWT",
+  "nameEn": "Kuwait",
+  "nameZh": "科威特",
+  "currency": null,
+  "isoCurrency": "KWD",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "ky",
+  "alpha3": "CYM",
+  "nameEn": "Cayman Islands",
+  "nameZh": "开曼群岛",
+  "currency": null,
+  "isoCurrency": "KYD",
+  "pppCategory": "premium"
+ },
+ {
+  "storefront": "kz",
+  "alpha3": "KAZ",
+  "nameEn": "Kazakhstan",
+  "nameZh": "哈萨克斯坦",
+  "currency": null,
+  "isoCurrency": "KZT",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "la",
+  "alpha3": "LAO",
+  "nameEn": "Laos",
+  "nameZh": "老挝",
+  "currency": null,
+  "isoCurrency": "LAK",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "lb",
+  "alpha3": "LBN",
+  "nameEn": "Lebanon",
+  "nameZh": "黎巴嫩",
+  "currency": null,
+  "isoCurrency": "LBP",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "lc",
+  "alpha3": "LCA",
+  "nameEn": "Saint Lucia",
+  "nameZh": "圣卢西亚",
+  "currency": null,
+  "isoCurrency": "XCD",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "lk",
+  "alpha3": "LKA",
+  "nameEn": "Sri Lanka",
+  "nameZh": "斯里兰卡",
+  "currency": null,
+  "isoCurrency": "LKR",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "lr",
+  "alpha3": "LBR",
+  "nameEn": "Liberia",
+  "nameZh": "利比里亚",
+  "currency": null,
+  "isoCurrency": "LRD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "lt",
+  "alpha3": "LTU",
+  "nameEn": "Lithuania",
+  "nameZh": "立陶宛",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "lu",
+  "alpha3": "LUX",
+  "nameEn": "Luxembourg",
+  "nameZh": "卢森堡",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "premium"
+ },
+ {
+  "storefront": "lv",
+  "alpha3": "LVA",
+  "nameEn": "Latvia",
+  "nameZh": "拉脱维亚",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "ly",
+  "alpha3": "LBY",
+  "nameEn": "Libya",
+  "nameZh": "利比亚",
+  "currency": null,
+  "isoCurrency": "LYD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ma",
+  "alpha3": "MAR",
+  "nameEn": "Morocco",
+  "nameZh": "摩洛哥",
+  "currency": null,
+  "isoCurrency": "MAD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "md",
+  "alpha3": "MDA",
+  "nameEn": "Moldova",
+  "nameZh": "摩尔多瓦",
+  "currency": null,
+  "isoCurrency": "MDL",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "me",
+  "alpha3": "MNE",
+  "nameEn": "Montenegro",
+  "nameZh": "黑山",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "mg",
+  "alpha3": "MDG",
+  "nameEn": "Madagascar",
+  "nameZh": "马达加斯加",
+  "currency": null,
+  "isoCurrency": "MGA",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "mk",
+  "alpha3": "MKD",
+  "nameEn": "North Macedonia",
+  "nameZh": "北馬其頓",
+  "currency": null,
+  "isoCurrency": "MKD",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "ml",
+  "alpha3": "MLI",
+  "nameEn": "Mali",
+  "nameZh": "马里",
+  "currency": null,
+  "isoCurrency": "XOF",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "mm",
+  "alpha3": "MMR",
+  "nameEn": "Myanmar",
+  "nameZh": "缅甸",
+  "currency": null,
+  "isoCurrency": "MMK",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "mn",
+  "alpha3": "MNG",
+  "nameEn": "Mongolia",
+  "nameZh": "蒙古",
+  "currency": null,
+  "isoCurrency": "MNT",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "mo",
+  "alpha3": "MAC",
+  "nameEn": "Macau",
+  "nameZh": "澳门",
+  "currency": null,
+  "isoCurrency": "MOP",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "mr",
+  "alpha3": "MRT",
+  "nameEn": "Mauritania",
+  "nameZh": "毛里塔尼亚",
+  "currency": null,
+  "isoCurrency": "MRU",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ms",
+  "alpha3": "MSR",
+  "nameEn": "Montserrat",
+  "nameZh": "蒙特塞拉特",
+  "currency": null,
+  "isoCurrency": "XCD",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "mt",
+  "alpha3": "MLT",
+  "nameEn": "Malta",
+  "nameZh": "马耳他",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "mu",
+  "alpha3": "MUS",
+  "nameEn": "Mauritius",
+  "nameZh": "毛里求斯",
+  "currency": null,
+  "isoCurrency": "MUR",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "mv",
+  "alpha3": "MDV",
+  "nameEn": "Maldives",
+  "nameZh": "马尔代夫",
+  "currency": null,
+  "isoCurrency": "MVR",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "mw",
+  "alpha3": "MWI",
+  "nameEn": "Malawi",
+  "nameZh": "马拉维",
+  "currency": null,
+  "isoCurrency": "MWK",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "mx",
+  "alpha3": "MEX",
+  "nameEn": "Mexico",
+  "nameZh": "墨西哥",
+  "currency": null,
+  "isoCurrency": "MXN",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "my",
+  "alpha3": "MYS",
+  "nameEn": "Malaysia",
+  "nameZh": "马来西亚",
+  "currency": null,
+  "isoCurrency": "MYR",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "mz",
+  "alpha3": "MOZ",
+  "nameEn": "Mozambique",
+  "nameZh": "莫桑比克",
+  "currency": null,
+  "isoCurrency": "MZN",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "na",
+  "alpha3": "NAM",
+  "nameEn": "Namibia",
+  "nameZh": "纳米比亚",
+  "currency": null,
+  "isoCurrency": "NAD,ZAR",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ne",
+  "alpha3": "NER",
+  "nameEn": "Niger",
+  "nameZh": "尼日尔",
+  "currency": null,
+  "isoCurrency": "XOF",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ng",
+  "alpha3": "NGA",
+  "nameEn": "Nigeria",
+  "nameZh": "尼日利亚",
+  "currency": null,
+  "isoCurrency": "NGN",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ni",
+  "alpha3": "NIC",
+  "nameEn": "Nicaragua",
+  "nameZh": "尼加拉瓜",
+  "currency": null,
+  "isoCurrency": "NIO",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "nl",
+  "alpha3": "NLD",
+  "nameEn": "Netherlands",
+  "nameZh": "荷兰",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "no",
+  "alpha3": "NOR",
+  "nameEn": "Norway",
+  "nameZh": "挪威",
+  "currency": null,
+  "isoCurrency": "NOK",
+  "pppCategory": "premium"
+ },
+ {
+  "storefront": "np",
+  "alpha3": "NPL",
+  "nameEn": "Nepal",
+  "nameZh": "尼泊尔",
+  "currency": null,
+  "isoCurrency": "NPR",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "nr",
+  "alpha3": "NRU",
+  "nameEn": "Nauru",
+  "nameZh": "瑙鲁",
+  "currency": null,
+  "isoCurrency": "AUD",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "nz",
+  "alpha3": "NZL",
+  "nameEn": "New Zealand",
+  "nameZh": "新西兰",
+  "currency": null,
+  "isoCurrency": "NZD",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "om",
+  "alpha3": "OMN",
+  "nameEn": "Oman",
+  "nameZh": "阿曼",
+  "currency": null,
+  "isoCurrency": "OMR",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "pa",
+  "alpha3": "PAN",
+  "nameEn": "Panama",
+  "nameZh": "巴拿马",
+  "currency": null,
+  "isoCurrency": "PAB,USD",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "pe",
+  "alpha3": "PER",
+  "nameEn": "Peru",
+  "nameZh": "秘鲁",
+  "currency": null,
+  "isoCurrency": "PEN",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "pg",
+  "alpha3": "PNG",
+  "nameEn": "Papua New Guinea",
+  "nameZh": "巴布亚新几内亚",
+  "currency": null,
+  "isoCurrency": "PGK",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ph",
+  "alpha3": "PHL",
+  "nameEn": "Philippines",
+  "nameZh": "菲律宾",
+  "currency": null,
+  "isoCurrency": "PHP",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "pk",
+  "alpha3": "PAK",
+  "nameEn": "Pakistan",
+  "nameZh": "巴基斯坦",
+  "currency": null,
+  "isoCurrency": "PKR",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "pl",
+  "alpha3": "POL",
+  "nameEn": "Poland",
+  "nameZh": "波兰",
+  "currency": null,
+  "isoCurrency": "PLN",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "pt",
+  "alpha3": "PRT",
+  "nameEn": "Portugal",
+  "nameZh": "葡萄牙",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "pw",
+  "alpha3": "PLW",
+  "nameEn": "Palau",
+  "nameZh": "帕劳",
+  "currency": null,
+  "isoCurrency": "USD",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "py",
+  "alpha3": "PRY",
+  "nameEn": "Paraguay",
+  "nameZh": "巴拉圭",
+  "currency": null,
+  "isoCurrency": "PYG",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "qa",
+  "alpha3": "QAT",
+  "nameEn": "Qatar",
+  "nameZh": "卡塔尔",
+  "currency": null,
+  "isoCurrency": "QAR",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "ro",
+  "alpha3": "ROU",
+  "nameEn": "Romania",
+  "nameZh": "罗马尼亚",
+  "currency": null,
+  "isoCurrency": "RON",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "rs",
+  "alpha3": "SRB",
+  "nameEn": "Serbia",
+  "nameZh": "塞尔维亚",
+  "currency": null,
+  "isoCurrency": "RSD",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "ru",
+  "alpha3": "RUS",
+  "nameEn": "Russia",
+  "nameZh": "俄罗斯",
+  "currency": null,
+  "isoCurrency": "RUB",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "rw",
+  "alpha3": "RWA",
+  "nameEn": "Rwanda",
+  "nameZh": "卢旺达",
+  "currency": null,
+  "isoCurrency": "RWF",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "sa",
+  "alpha3": "SAU",
+  "nameEn": "Saudi Arabia",
+  "nameZh": "沙特阿拉伯",
+  "currency": null,
+  "isoCurrency": "SAR",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "sb",
+  "alpha3": "SLB",
+  "nameEn": "Solomon Islands",
+  "nameZh": "所罗门群岛",
+  "currency": null,
+  "isoCurrency": "SBD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "sc",
+  "alpha3": "SYC",
+  "nameEn": "Seychelles",
+  "nameZh": "塞舌尔",
+  "currency": null,
+  "isoCurrency": "SCR",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "se",
+  "alpha3": "SWE",
+  "nameEn": "Sweden",
+  "nameZh": "瑞典",
+  "currency": null,
+  "isoCurrency": "SEK",
+  "pppCategory": "high_income"
+ },
+ {
+  "storefront": "sg",
+  "alpha3": "SGP",
+  "nameEn": "Singapore",
+  "nameZh": "新加坡",
+  "currency": null,
+  "isoCurrency": "SGD",
+  "pppCategory": "premium"
+ },
+ {
+  "storefront": "si",
+  "alpha3": "SVN",
+  "nameEn": "Slovenia",
+  "nameZh": "斯洛文尼亚",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "sk",
+  "alpha3": "SVK",
+  "nameEn": "Slovakia",
+  "nameZh": "斯洛伐克",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "sl",
+  "alpha3": "SLE",
+  "nameEn": "Sierra Leone",
+  "nameZh": "塞拉利昂",
+  "currency": null,
+  "isoCurrency": "SLE",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "sn",
+  "alpha3": "SEN",
+  "nameEn": "Senegal",
+  "nameZh": "塞内加尔",
+  "currency": null,
+  "isoCurrency": "XOF",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "sr",
+  "alpha3": "SUR",
+  "nameEn": "Suriname",
+  "nameZh": "苏里南",
+  "currency": null,
+  "isoCurrency": "SRD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "st",
+  "alpha3": "STP",
+  "nameEn": "São Tomé and Príncipe",
+  "nameZh": "圣多美和普林西比",
+  "currency": null,
+  "isoCurrency": "STN",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "sv",
+  "alpha3": "SLV",
+  "nameEn": "El Salvador",
+  "nameZh": "萨尔瓦多",
+  "currency": null,
+  "isoCurrency": "USD",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "sz",
+  "alpha3": "SWZ",
+  "nameEn": "Eswatini",
+  "nameZh": "斯威士兰",
+  "currency": null,
+  "isoCurrency": "SZL,ZAR",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "tc",
+  "alpha3": "TCA",
+  "nameEn": "Turks and Caicos Islands",
+  "nameZh": "特克斯和凯科斯群岛",
+  "currency": null,
+  "isoCurrency": "USD",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "td",
+  "alpha3": "TCD",
+  "nameEn": "Chad",
+  "nameZh": "乍得",
+  "currency": null,
+  "isoCurrency": "XAF",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "th",
+  "alpha3": "THA",
+  "nameEn": "Thailand",
+  "nameZh": "泰国",
+  "currency": null,
+  "isoCurrency": "THB",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "tj",
+  "alpha3": "TJK",
+  "nameEn": "Tajikistan",
+  "nameZh": "塔吉克斯坦",
+  "currency": null,
+  "isoCurrency": "TJS",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "tm",
+  "alpha3": "TKM",
+  "nameEn": "Turkmenistan",
+  "nameZh": "土库曼斯坦",
+  "currency": null,
+  "isoCurrency": "TMT",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "tn",
+  "alpha3": "TUN",
+  "nameEn": "Tunisia",
+  "nameZh": "突尼斯",
+  "currency": null,
+  "isoCurrency": "TND",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "to",
+  "alpha3": "TON",
+  "nameEn": "Tonga",
+  "nameZh": "汤加",
+  "currency": null,
+  "isoCurrency": "TOP",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "tr",
+  "alpha3": "TUR",
+  "nameEn": "Türkiye",
+  "nameZh": "土耳其",
+  "currency": null,
+  "isoCurrency": "TRY",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "tt",
+  "alpha3": "TTO",
+  "nameEn": "Trinidad and Tobago",
+  "nameZh": "特立尼达和多巴哥",
+  "currency": null,
+  "isoCurrency": "TTD",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "tw",
+  "alpha3": "TWN",
+  "nameEn": "Taiwan",
+  "nameZh": "台灣",
+  "currency": null,
+  "isoCurrency": "TWD",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "tz",
+  "alpha3": "TZA",
+  "nameEn": "Tanzania",
+  "nameZh": "坦桑尼亚",
+  "currency": null,
+  "isoCurrency": "TZS",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ua",
+  "alpha3": "UKR",
+  "nameEn": "Ukraine",
+  "nameZh": "乌克兰",
+  "currency": null,
+  "isoCurrency": "UAH",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "ug",
+  "alpha3": "UGA",
+  "nameEn": "Uganda",
+  "nameZh": "乌干达",
+  "currency": null,
+  "isoCurrency": "UGX",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "us",
+  "alpha3": "USA",
+  "nameEn": "United States",
+  "nameZh": "美国",
+  "currency": null,
+  "isoCurrency": "USD",
+  "pppCategory": "usa"
+ },
+ {
+  "storefront": "uy",
+  "alpha3": "URY",
+  "nameEn": "Uruguay",
+  "nameZh": "乌拉圭",
+  "currency": null,
+  "isoCurrency": "UYU",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "uz",
+  "alpha3": "UZB",
+  "nameEn": "Uzbekistan",
+  "nameZh": "乌兹别克斯坦",
+  "currency": null,
+  "isoCurrency": "UZS",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "vc",
+  "alpha3": "VCT",
+  "nameEn": "Saint Vincent and the Grenadines",
+  "nameZh": "圣文森特和格林纳丁斯",
+  "currency": null,
+  "isoCurrency": "XCD",
+  "pppCategory": "lower_middle"
+ },
+ {
+  "storefront": "ve",
+  "alpha3": "VEN",
+  "nameEn": "Venezuela",
+  "nameZh": "委内瑞拉",
+  "currency": null,
+  "isoCurrency": "VES",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "vg",
+  "alpha3": "VGB",
+  "nameEn": "British Virgin Islands",
+  "nameZh": "英属维尔京群岛",
+  "currency": null,
+  "isoCurrency": "USD",
+  "pppCategory": "upper_middle"
+ },
+ {
+  "storefront": "vn",
+  "alpha3": "VNM",
+  "nameEn": "Vietnam",
+  "nameZh": "越南",
+  "currency": null,
+  "isoCurrency": "VND",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "vu",
+  "alpha3": "VUT",
+  "nameEn": "Vanuatu",
+  "nameZh": "瓦努阿图",
+  "currency": null,
+  "isoCurrency": "VUV",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "xk",
+  "alpha3": "XKS",
+  "nameEn": "Kosovo",
+  "nameZh": "科索沃",
+  "currency": null,
+  "isoCurrency": "EUR",
+  "pppCategory": "unknown",
+  "note": "Apple storefront code, not ISO 3166"
+ },
+ {
+  "storefront": "ye",
+  "alpha3": "YEM",
+  "nameEn": "Yemen",
+  "nameZh": "也门",
+  "currency": null,
+  "isoCurrency": "YER",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "za",
+  "alpha3": "ZAF",
+  "nameEn": "South Africa",
+  "nameZh": "南非",
+  "currency": null,
+  "isoCurrency": "ZAR",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "zm",
+  "alpha3": "ZMB",
+  "nameEn": "Zambia",
+  "nameZh": "赞比亚",
+  "currency": null,
+  "isoCurrency": "ZMW",
+  "pppCategory": "emerging"
+ },
+ {
+  "storefront": "zw",
+  "alpha3": "ZWE",
+  "nameEn": "Zimbabwe",
+  "nameZh": "津巴布韦",
+  "currency": null,
+  "isoCurrency": "BWP,CNY,EUR,GBP,INR,JPY,USD,ZAR,ZWG",
+  "pppCategory": "emerging"
+ }
+]

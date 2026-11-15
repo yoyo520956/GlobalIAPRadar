@@ -1,0 +1,85 @@
+name: iOS Build, Test & Data Smoke
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  data-engine:
+    name: Data engine smoke test (real Apple APIs)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Probe ChatGPT across all storefronts
+        run: python3 scripts/probe_apps.py "ChatGPT=6448311069"
+      - name: Probe WeChat across all storefronts
+        run: python3 scripts/probe_apps.py "WeChat=414478124"
+      - name: Upload probe snapshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: probe-snapshots
+          path: data/probe_*.json
+
+  ios:
+    name: Build unsigned IPA + unit tests
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '16.2'
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Run unit tests (iPhone SE 3rd generation simulator)
+        run: |
+          set -o pipefail
+          xcodebuild -project GlobalIAPRadar.xcodeproj -scheme GlobalIAPRadar \
+            -destination 'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=latest' \
+            CODE_SIGNING_ALLOWED=NO test | tee test.log
+
+      - name: Build release (unsigned)
+        run: |
+          set -o pipefail
+          xcodebuild -project GlobalIAPRadar.xcodeproj -scheme GlobalIAPRadar \
+            -sdk iphoneos -configuration Release -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build | tee build.log
+
+      - name: Package unsigned IPA
+        run: |
+          mkdir -p Payload
+          cp -R build/Build/Products/Release-iphoneos/GlobalIAPRadar.app Payload/
+          zip -qr GlobalIAPRadar-unsigned.ipa Payload
+          shasum -a 256 GlobalIAPRadar-unsigned.ipa
+          du -h GlobalIAPRadar-unsigned.ipa
+
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: |
+            build.log
+            test.log
+
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: GlobalIAPRadar-unsigned-ipa
+          path: GlobalIAPRadar-unsigned.ipa

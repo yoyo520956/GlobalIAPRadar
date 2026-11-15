@@ -1,0 +1,62 @@
+name: GlobalIAPRadar
+options:
+  bundleIdPrefix: com.yoyo520956
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    SWIFT_STRICT_CONCURRENCY: complete
+    CLANG_ENABLE_MODULES: YES
+    DEAD_CODE_STRIPPING: YES
+
+targets:
+  GlobalIAPRadar:
+    type: application
+    platform: iOS
+    sources:
+      - path: GlobalIAPRadar
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yoyo520956.globaliapradar
+        PRODUCT_NAME: GlobalIAPRadar
+        INFOPLIST_FILE: GlobalIAPRadar/Resources/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        TARGETED_DEVICE_FAMILY: "1"
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_PREVIEWS: YES
+
+  GlobalIAPRadarTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: GlobalIAPRadarTests
+    dependencies:
+      - target: GlobalIAPRadar
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yoyo520956.globaliapradar.tests
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  GlobalIAPRadar:
+    build:
+      targets:
+        GlobalIAPRadar: all
+        GlobalIAPRadarTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - GlobalIAPRadarTests
+    archive:
+      config: Release
