@@ -11,7 +11,14 @@ enum HistoryRange: Int, CaseIterable, Identifiable {
     var id: Int { rawValue }
 
     func label(_ language: AppLanguage) -> String {
-        language == .zh ? "近 \(rawValue) 天" : "Last \(rawValue) days"
+        // Labels come from the localisation table so both languages stay in
+        // one place and a missing translation fails the audit, not the build.
+        switch self {
+        case .d7: return L10n.t("history.range7", language)
+        case .d30: return L10n.t("history.range30", language)
+        case .d90: return L10n.t("history.range90", language)
+        case .d180: return L10n.t("history.range180", language)
+        }
     }
 }
 
@@ -130,7 +137,7 @@ struct HistoryView: View {
                     Text(productName(id)).tag(String?.some(id))
                 }
             }
-            Picker(L10n.t("history.title", language), selection: $range) {
+            Picker(L10n.t("history.range", language), selection: $range) {
                 ForEach(HistoryRange.allCases) { item in
                     Text(item.label(language)).tag(item)
                 }
