@@ -22,6 +22,13 @@ jobs:
           python-version: '3.11'
       - name: Probe ChatGPT across all 175 storefronts
         run: python3 scripts/probe_apps.py "ChatGPT=6448311069"
+
+      # A missing or duplicated localisation key does not fail the Swift build;
+      # it just renders raw or blank text on device. Enforce it here, where
+      # Python already runs, so a table drift fails the pipeline instead of
+      # shipping a silently broken label.
+      - name: Audit localisation table against call sites
+        run: python3 scripts/check_l10n.py
       - name: Upload probe snapshot
         uses: actions/upload-artifact@v4
         with:
