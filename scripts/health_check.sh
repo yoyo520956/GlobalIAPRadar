@@ -53,7 +53,7 @@ if [ -d "$REPO/.git" ]; then
     (
         cd "$REPO" || exit 0
         DIRTY_COUNT=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
-        HEAD=$(git rev-parse --short HEAD 2>/dev/null)
+        HEAD=$(git rev-parse --short=8 HEAD 2>/dev/null)
         # Ask the API for the real remote HEAD (works even when github.com is
         # down via git protocol). Only compare if we actually got an answer;
         # otherwise report "unknown" instead of a false DIVERGED flag.
