@@ -52,15 +52,27 @@ fi
 if [ -d "$REPO/.git" ]; then
     (
         cd "$REPO" || exit 0
-        DIRTY_COUNT=$(git status --porcelain 2>/dev/null | head -1 | wc -c | tr -d ' ')
+        DIRTY_COUNT=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
         HEAD=$(git rev-parse --short HEAD 2>/dev/null)
-        UPSTREAM=$(git rev-parse --short @{u} 2>/dev/null)
-        if [ -n "$HEAD" ] && [ -n "$UPSTREAM" ] && [ "$HEAD" = "$UPSTREAM" ]; then
-            say "GIT: clean, HEAD=$HEAD"
-        elif [ -n "$HEAD" ]; then
-            say "GIT: DIVERGED local=$HEAD upstream=${UPSTREAM:-?} dirty_bytes=$DIRTY_COUNT"
-        else
+        # Ask the API for the real remote HEAD (works even when github.com is
+        # down via git protocol). Only compare if we actually got an answer;
+        # otherwise report "unknown" instead of a false DIVERGED flag.
+        REMOTE=""
+        if [ -n "${GITHUB_TOKEN:-}" ]; then
+            REMOTE=$(curl -s --max-time 10 \
+                -H "Authorization: Bearer $GITHUB_TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                "$API/commits?per_page=1" 2>/dev/null | tr -d ' \n\t' | \
+                grep -o '"sha":"[0-9a-f]*"' | head -1 | sed 's/"sha":"//; s/"$//' | cut -c1-8)
+        fi
+        if [ -z "$HEAD" ]; then
             say "GIT: local repo state unreadable"
+        elif [ -z "$REMOTE" ]; then
+            say "GIT: HEAD=$HEAD (remote unknown -- no token or no network)"
+        elif [ "$HEAD" = "$REMOTE" ]; then
+            say "GIT: clean, HEAD=$HEAD"
+        else
+            say "GIT: local=$HEAD remote=$REMOTE dirty_files=$DIRTY_COUNT"
         fi
     ) 2>/dev/null
 else
