@@ -95,6 +95,17 @@ struct ComparisonView: View {
                 .font(.caption)
             Toggle(L10n.t("compare.showAll", language), isOn: $showMissing)
                 .font(.caption)
+            HStack(spacing: 6) {
+                Circle().fill(Color.secondary.opacity(0.5)).frame(width: 5, height: 5)
+                Text([
+                    L10n.t("compare.region", language),
+                    L10n.t("compare.local", language),
+                    L10n.t("compare.convertedShort", language)
+                ].joined(separator: " · "))
+                .font(.system(size: 10))
+                .foregroundStyle(.secondary)
+            }
+            .padding(.top, 2)
         }
     }
 
@@ -125,12 +136,16 @@ struct ComparisonView: View {
                 Text(PriceFormat.money(entry.price, currency: entry.currency))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+                Text(L10n.t("compare.local", language))
+                    .font(.system(size: 9))
+                    .foregroundStyle(.tertiary)
             }
             Spacer(minLength: 4)
             VStack(alignment: .trailing, spacing: 1) {
                 Text(appState.formattedConverted(entry.price, from: entry.currency))
                     .font(.caption.weight(.semibold))
-                Text(entry.currency ?? "—")
+                Text(String(format: L10n.t("compare.converted", language),
+                            entry.currency ?? L10n.t("common.unknown", language)))
                     .font(.system(size: 9))
                     .foregroundStyle(.tertiary)
             }
