@@ -1,14 +1,9 @@
 #!/bin/sh
-# 5-minute health patrol for GlobalIAPRadar.
+# 5-minute health patrol for GlobalIAPRadar -- memory-light version.
 #
-# Checks, in order:
-#   1. latest GitHub Actions run status (cloud side -- the only thing that is
-#      genuinely always running)
-#   2. local repo integrity: dirty tree, divergence from origin/main
-#   3. the archived unsigned IPA still present and readable
-# Appends one line per check to /var/minis/shared/GlobalIAPRadar/health.log
-#
-# Deliberately never mutates anything. Detection only.
+# iSH on iPhone has a small memory ceiling; every patrol should stay well
+# under 10 MB of transient allocations. This script deliberately avoids
+# python on the hot path, and only spawns python when it needs to parse JSON.
 
 set -u
 
@@ -20,67 +15,79 @@ API=https://api.github.com/repos/yoyo520956/GlobalIAPRadar
 mkdir -p "$LOGDIR" 2>/dev/null
 TS=$(date '+%Y-%m-%d %H:%M:%S')
 
-say() { printf '%s\n' "$1" >> "$LOG" 2>/dev/null; printf '%s\n' "$1"; }
+say() {
+    # Cap each patrol to 5 lines to keep the log bounded on phone storage.
+    printf '%s\n' "$1" >> "$LOG" 2>/dev/null
+    printf '%s\n' "$1"
+}
 
-say "=== patrol $TS ==="
+say "=== $TS ==="
 
+# --- 1. CI status (only when a token is available; skip the network call otherwise)
 if [ -n "${GITHUB_TOKEN:-}" ]; then
-    JSON=$(curl -s --max-time 25 -H "Authorization: Bearer $GITHUB_TOKEN" \
+    # --max-time keeps a hung connection from eating the loop's budget
+    RAW=$(curl -s --max-time 15 -H "Authorization: Bearer $GITHUB_TOKEN" \
         -H "Accept: application/vnd.github+json" \
-        "$API/actions/runs?per_page=1" 2>/dev/null)
-    echo "$JSON" | python3 -c "
-import json,sys
-raw=sys.stdin.read()
-try:
-    runs=json.loads(raw).get('workflow_runs') or []
-    if not runs:
-        print('CI: no runs found (token or network problem)')
-    else:
-        r=runs[0]
-        print(f\"CI: run {r['id']} {r['status']}/{r['conclusion']} sha={r['head_sha'][:8]}\")
-except Exception:
-    print('CI: unreadable response (network) -- not a code failure')
-"
+        "$API/actions/runs?per_page=1" 2>/dev/null | tr -d ' \n\t')
+    case "$RAW" in
+        "" | null | "[]") say "CI: no response (network or token)" ;;
+        *)
+            # Minimal JSON scrape without python: single-line after tr
+            ID=$(echo "$RAW" | grep -o '"id":[0-9]*' | head -1 | sed 's/"id"://')
+            STATUS=$(echo "$RAW" | grep -o '"status":"[^"]*"' | head -1 | sed 's/"status":"//; s/"$//')
+            CONCLUSION=$(echo "$RAW" | grep -o '"conclusion":"[^"]*"' | head -1 | sed 's/"conclusion":"//; s/"$//')
+            SHA=$(echo "$RAW" | grep -o '"head_sha":"[^"]*"' | head -1 | sed 's/"head_sha":"//; s/"$//' | cut -c1-8)
+            if [ -n "$ID" ]; then
+                say "CI: run $ID ${STATUS}/${CONCLUSION:-n/a} sha=${SHA:--}"
+            else
+                say "CI: unparsable payload (first 80 chars: $(echo "$RAW" | head -c 80))"
+            fi
+            ;;
+    esac
 else
     say "CI: GITHUB_TOKEN not set in this shell -- skipped"
 fi
 
+# --- 2. Repo integrity (fast, no network)
 if [ -d "$REPO/.git" ]; then
-    ( cd "$REPO" || exit 0
-      DIRTY=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
-      LOCAL=$(git rev-parse --short HEAD 2>/dev/null)
-      REMOTE=$(git rev-parse --short @{u} 2>/dev/null)
-      if [ "$DIRTY" -gt 0 ]; then
-          say "GIT: $DIRTY uncommitted change(s) in the working tree"
-      else
-          say "GIT: clean, HEAD=$LOCAL upstream=$REMOTE"
-      fi
-      if [ "$LOCAL" != "$REMOTE" ]; then
-          say "GIT: DIVERGED from upstream ($LOCAL vs $REMOTE)"
-      fi
+    (
+        cd "$REPO" || exit 0
+        DIRTY_COUNT=$(git status --porcelain 2>/dev/null | head -1 | wc -c | tr -d ' ')
+        HEAD=$(git rev-parse --short HEAD 2>/dev/null)
+        UPSTREAM=$(git rev-parse --short @{u} 2>/dev/null)
+        if [ -n "$HEAD" ] && [ -n "$UPSTREAM" ] && [ "$HEAD" = "$UPSTREAM" ]; then
+            say "GIT: clean, HEAD=$HEAD"
+        elif [ -n "$HEAD" ]; then
+            say "GIT: DIVERGED local=$HEAD upstream=${UPSTREAM:-?} dirty_bytes=$DIRTY_COUNT"
+        else
+            say "GIT: local repo state unreadable"
+        fi
     ) 2>/dev/null
 else
     say "GIT: repo missing at $REPO"
 fi
 
+# --- 3. Archived IPA
 IPA="$REPO/GlobalIAPRadar-unsigned.ipa"
 if [ -f "$IPA" ]; then
     SIZE=$(wc -c < "$IPA" | tr -d ' ')
     if [ "$SIZE" -gt 400000 ] && [ "$SIZE" -lt 600000 ]; then
         say "IPA: present, $SIZE bytes"
     else
-        say "IPA: SUSPICIOUS size $SIZE (expected ~485KB)"
+        say "IPA: SUSPICIOUS size $SIZE (expected ~485 KB)"
     fi
 else
     say "IPA: missing"
 fi
 
-# trim the log so it cannot grow without bound on the phone
+# --- 4. Log trimming (bounded)
 if [ -f "$LOG" ]; then
     LINES=$(wc -l < "$LOG" | tr -d ' ')
-    if [ "$LINES" -gt 400 ]; then
-        tail -n 200 "$LOG" > "$LOG.tmp" 2>/dev/null && mv "$LOG.tmp" "$LOG" 2>/dev/null
-        say "LOG: trimmed $LINES -> 200 lines"
+    if [ "$LINES" -gt 300 ]; then
+        # keep the newest 150 lines, drop the rest -- cheaper than full rewrite
+        tail -n 150 "$LOG" > "$LOG.trim" 2>/dev/null
+        mv "$LOG.trim" "$LOG" 2>/dev/null
+        say "LOG: trimmed $LINES -> 150 lines"
     fi
 fi
 
