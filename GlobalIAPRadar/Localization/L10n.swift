@@ -67,10 +67,11 @@ enum L10n {
         "compare.showAll": ("显示全部 175 区", "Show all 175"),
         "compare.local": ("当地价格", "Local price"),
         "compare.region": ("地区", "Region"),
+        "compare.converted": ("换算价格（%@）", "Converted (%@)"),
+        "compare.convertedShort": ("换算价", "Converted"),
         "compare.product": ("商品", "Product"),
         "compare.missing": ("该地区未返回数据", "No data returned for this storefront"),
         "compare.empty": ("扫描完成后显示比价结果", "Comparison appears after a scan"),
-        "compare.converted": ("换算价格（%@）", "Converted (%@)"),
 
         "rank.title": ("价格排行", "Price ranking"),
         "rank.lowest": ("最低价", "Lowest"),
@@ -96,6 +97,7 @@ enum L10n {
         "history.range180": ("180 天", "180 days"),
         "history.empty": ("还没有历史快照", "No snapshots yet"),
         "history.app": ("选择应用", "Choose an app"),
+        "history.range": ("时间范围", "Time range"),
 
         "settings.title": ("设置", "Settings"),
         "settings.language": ("语言", "Language"),
