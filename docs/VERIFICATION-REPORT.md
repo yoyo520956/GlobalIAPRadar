@@ -93,13 +93,13 @@
 
 ## 5. 构建与测试验证（GitHub Actions，macOS 真机工具链）
 
-- 工作流 `.github/workflows/ios-build.yml`，run **43759906371**（commit 27d191c）**全绿**：
+- 工作流 `.github/workflows/ios-build.yml`，run **43842870757**（commit 6ac5dfa6）**全绿**：
   - `data-engine`：Ubuntu 上对 Apple 真实 API 做 175 区全量扫描，成功并上传快照
   - `ios`：Xcode 16.4 + iPhone SE (3rd generation) iOS 18.5 模拟器（脚本按 SDK 版本自动配对，见 `scripts/select_simulator.py`）
     - Release `iphoneos` 构建 **BUILD SUCCEEDED**
     - 单元测试 **Executed 20 tests, 0 failures — TEST SUCCEEDED**（含新增 `CatalogDecodingTests` 4 例，用真实抓取的响应做夹具，锁死 kebab-case 键名）
     - 产出未签名 IPA artifact `GlobalIAPRadar-unsigned-ipa`（约 0.5 MB，含可执行文件 + 175 区数据库）
-- 本地 IPA 已归档：`GlobalIAPRadar-unsigned.ipa`，SHA-256 `54e6600d396b6019d29fd98f6758dab6ac353cf87841e0aab6cd61a5833b4dae`（485,046 字节，内含 1.94 MB Mach-O 可执行文件、Info.plist、175 区 storefronts.json）
+- 本地 IPA 已归档：`GlobalIAPRadar-unsigned.ipa`，SHA-256 `b5de4dd30f88b835c987e9bf0b46d208bd54a227b234f9456d35a7051013ef70`（488,272 字节，内含 1.94 MB Mach-O 可执行文件、Info.plist、175 区 storefronts.json；对应 commit 6ac5dfa6 的构建）
 - 签名 IPA 走 `signed-ipa.yml`（workflow_dispatch，证书/描述文件放在仓库 secrets，个人免费 Apple ID 可用，7 天重签）
 
 ## 6. 2026-11-15 线上 bug：kebab-case 键名导致 175/175 显示"数据源未返回 IAP"
