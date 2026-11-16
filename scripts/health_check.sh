@@ -52,29 +52,32 @@ fi
 if [ -d "$REPO/.git" ]; then
     (
         cd "$REPO" || exit 0
-        DIRTY_COUNT=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+        # --no-ahead-behind is essential: plain `git status` contacts the remote
+        # to compute ahead/behind, and a hung network makes the patrol itself
+        # hang -- exactly when it is most needed. A commit can be read locally.
+        DIRTY_COUNT=$(git -c status.aheadBehind=false status --porcelain 2>/dev/null | wc -l | tr -d ' ')
         HEAD=$(git rev-parse --short=8 HEAD 2>/dev/null)
         # Ask the API for the real remote HEAD (works even when github.com is
         # down via git protocol). Only compare if we actually got an answer;
         # otherwise report "unknown" instead of a false DIVERGED flag.
         REMOTE=""
         if [ -n "${GITHUB_TOKEN:-}" ]; then
-            REMOTE=$(curl -s --max-time 10 \
+            REMOTE=$(curl -s --max-time 8 \
                 -H "Authorization: Bearer $GITHUB_TOKEN" \
                 -H "Accept: application/vnd.github+json" \
                 "$API/commits?per_page=1" 2>/dev/null | tr -d ' \n\t' | \
                 grep -o '"sha":"[0-9a-f]*"' | head -1 | sed 's/"sha":"//; s/"$//' | cut -c1-8)
         fi
         if [ -z "$HEAD" ]; then
-            say "GIT: local repo state unreadable"
+            echo "GIT: local repo state unreadable"
         elif [ -z "$REMOTE" ]; then
-            say "GIT: HEAD=$HEAD (remote unknown -- no token or no network)"
+            echo "GIT: HEAD=$HEAD (remote unknown -- no token or no network)"
         elif [ "$HEAD" = "$REMOTE" ]; then
-            say "GIT: clean, HEAD=$HEAD"
+            echo "GIT: clean, HEAD=$HEAD"
         else
-            say "GIT: local=$HEAD remote=$REMOTE dirty_files=$DIRTY_COUNT"
+            echo "GIT: local=$HEAD remote=$REMOTE dirty_files=$DIRTY_COUNT"
         fi
-    ) 2>/dev/null
+    ) 2>/dev/null | while IFS= read -r line; do say "$line"; done
 else
     say "GIT: repo missing at $REPO"
 fi
